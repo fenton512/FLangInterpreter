@@ -1,0 +1,10 @@
+(func reverse (lst)
+    ((setq helper
+        (lambda (lst cur)
+            (cond
+                (isnull lst) cur
+                (helper (tail lst) (cons (head lst) cur)))))
+    ( return (helper lst null) ))
+)
+
+(reverse (1 2 3 4 5))  // '(5 4 3 2 1)

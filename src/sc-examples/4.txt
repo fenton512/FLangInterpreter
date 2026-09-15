@@ -1,0 +1,18 @@
+//shadowing parameters
+(setq arg1 10)
+(setq arg2 20)
+(func shadowingTest (arg1)
+  ((setq arg2 5)
+  (plus arg1 arg2)))
+shadowingTest(5) // (5 10)
+(plus arg1 arg2) // 30
+
+(func shadowingTestv2 (arg1)
+  (prog (arg1)
+  (
+    (setq arg2 5)
+    (return (plus arg1 arg2))
+  )
+  ))
+(shadowingTestv2 5) // 10
+(plus arg1 arg2) // 30

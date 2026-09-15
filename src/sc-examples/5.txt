@@ -1,0 +1,17 @@
+//func returns
+
+//evaluated third argument
+((lambda () (times (divide 5 1) 5)))
+
+//list of evaluated values
+(func doSomething () (
+  (setq _x 10)
+  (plus _x 2)
+))
+(doSomething) // (10 12)
+(first (tail (doSomething))) // 12
+
+(func doWithReturn (arg1 arg2)
+  ((setq x arg1)
+  (return 5)
+  (divide 0 0)))

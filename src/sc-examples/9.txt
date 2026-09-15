@@ -1,0 +1,5 @@
+// evaluates elements
+'(plus (plus 1 (minus 3 4)) 5)  // -> '(plus 0 5)
+
+// or keeps everything as is
+'(plus (plus 1 (minus 3 4)) 5)

@@ -1,0 +1,8 @@
+(setq lst null)
+(setq i 9)
+(while true
+    ((cond (equal i 5)
+    (break))
+    (setq lst (cons i lst))
+    (setq i (minus i 1))))
+lst  // '(6 7 8 9)

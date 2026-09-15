@@ -1,0 +1,16 @@
+//nested conds
+(setq x 2)
+(setq fn (lambda (a)
+    (cond (isint a) (less a a)
+        (cond (isreal a) (greatereq a a)
+            (cond (isbool a) (and (or (xor (not a) a) a) a)
+                (cond (isatom a) (a)
+                    (cond (islist a) (tail a)
+                        (cond (isnull a) (cons 1 a)))))))))
+
+(fn null) // (1)
+(fn (1 2)) // (2)
+(fn x) // (2)
+(fn true) // true
+(fn 1.3) // true
+(fn 1) // false

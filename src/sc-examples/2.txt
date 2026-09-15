@@ -1,0 +1,2 @@
+(1 2 3)    // list
+((lambda (a) (plus a a)) 4)  // call of anonymous callable with argument 4

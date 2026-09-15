@@ -1,0 +1,13 @@
+//interaction with a list
+(func doMagic (temps)
+    (func helper (temps result)
+        (cond (isnull temps) result
+              (helper (tail temps) (cons (times 5 (times 0.1 (head temps))) result)))
+    (return (helper temps null))))
+
+(func makeMagic (temps)
+    (cond (isnull temps) null
+    (cons (times 5 (times 0.1 (head temps))) (makeMagic(tail temps)))))
+
+(doMagic (20 30 40)) // (20 15 10)
+(makeMagic (20 30 40)) // (10 15 20)

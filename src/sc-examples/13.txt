@@ -1,0 +1,8 @@
+//higher order functions
+(func makeIncrement (additor)
+    (return (lambda (x) (plus x additor))))
+
+(setq increment5 (makeIncrement 5))
+(increment5 10) // 15
+(setq increment10 (makeIncrement 10))
+(increment10 10) // 20

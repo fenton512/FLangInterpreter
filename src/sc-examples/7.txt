@@ -1,0 +1,7 @@
+(setq lst null)
+(setq i 9)
+(while (greatereq i 0)
+    ((setq lst (cons i lst))
+    (setq i (minus i 1))))
+
+lst  // '(0 1 2 3 4 5 6 7 8 9)
