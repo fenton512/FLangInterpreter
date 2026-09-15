@@ -1,3 +1,5 @@
+package ru.lapolitia;
+
 public class Token {
     final TokenType type;
     final String source;

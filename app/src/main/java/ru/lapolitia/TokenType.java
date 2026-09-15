@@ -1,4 +1,4 @@
-
+package ru.lapolitia;
 
 
 public enum TokenType {

@@ -1,0 +1,6 @@
+
+
+(setq nan 4.32.)  // extra point
+((*)  // unknown char
+
+?  // unknown char
