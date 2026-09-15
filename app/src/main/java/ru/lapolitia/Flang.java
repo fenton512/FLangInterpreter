@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-
 public class Flang {
 
     private static boolean hasError = false;
@@ -23,12 +22,14 @@ public class Flang {
             runPrompt();
         }
     }
-    private static void runFile(String path) throws  IOException {
+
+    private static void runFile(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         run(new String(bytes, Charset.defaultCharset()));
         if (hasError) System.exit(2);
     }
-    private static  void runPrompt() throws  IOException {
+
+    private static void runPrompt() throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
 
@@ -37,10 +38,11 @@ public class Flang {
             String line = reader.readLine();
             if (line == null) break;
             run(line);
-            //to prevent killing the user session
+            // to prevent killing the user session
             hasError = false;
         }
     }
+
     private static void run(String sourceCode) {
         Scanner scanner = new Scanner(sourceCode);
         List<Token> tokens = scanner.scanTokens();
@@ -59,5 +61,4 @@ public class Flang {
         System.err.println("Error in line " + line + " detail: " + message);
         hasError = true;
     }
-
 }

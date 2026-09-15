@@ -9,7 +9,6 @@ public class Scanner {
     private final String source;
     private final List<Token> tokens = new ArrayList<>();
 
-
     private static final Map<String, TokenType> keywords;
 
     static {
@@ -50,7 +49,6 @@ public class Scanner {
         keywords.put("true", TokenType.TRUE);
         keywords.put("false", TokenType.FALSE);
         keywords.put("null", TokenType.NULL);
-
     }
 
     private int start = 0;
@@ -63,7 +61,7 @@ public class Scanner {
 
     public List<Token> scanTokens() {
         while (!isEnd()) {
-            //starts next lexeme
+            // starts next lexeme
             start = current;
             scanToken();
         }
@@ -89,7 +87,9 @@ public class Scanner {
                     Flang.reportError(line, "Unexpected " + ch);
                 }
             }
-            case '/' -> { while (skip() != '\n' && !isEnd()) getNextChar();}
+            case '/' -> {
+                while (skip() != '\n' && !isEnd()) getNextChar();
+            }
 
             case ' ', '\r', '\t' -> {}
             case '\n' -> ++line;
@@ -98,13 +98,11 @@ public class Scanner {
                 if (isDigit(ch)) {
                     parceNumber();
                 } else if (isLetter(ch)) {
-                   parceIdentifier();
-                }
-                else {
+                    parceIdentifier();
+                } else {
                     Flang.reportError(line, "Unexpected character: " + ch);
                 }
             }
-
         }
     }
 
@@ -113,13 +111,11 @@ public class Scanner {
             getNextChar();
         }
 
-
         String text = source.substring(start, current);
         TokenType type = keywords.get(text);
         if (type == null) {
             type = TokenType.IDENTIFIER;
         }
-
 
         if (type == TokenType.FALSE) {
             addToken(type, false);
@@ -131,8 +127,7 @@ public class Scanner {
     }
 
     private boolean isLetter(char ch) {
-        return (ch >= 'a' && ch <= 'z') ||
-                (ch >= 'A' && ch <= 'Z');
+        return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
     }
 
     private boolean isLetterDigit(char ch) {
@@ -147,38 +142,36 @@ public class Scanner {
         if (skip() == '.' && isDigit(skipNext())) {
             getNextChar();
         } else if (isValidAfterDigit(skip())) {
-           Flang.reportError(line, "Unexpected character '" + skip() + "' in number");
-           addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
-           getNextChar();
-           return;
+            Flang.reportError(line, "Unexpected character '" + skip() + "' in number");
+            addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
+            getNextChar();
+            return;
         }
 
         while (isDigit(skip())) {
             getNextChar();
         }
         if (isValidAfterDigit(skip())) {
-           Flang.reportError(line, "Unexpected character '" + skip() + "' in number");
-           addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
-           getNextChar();
-           return;
+            Flang.reportError(line, "Unexpected character '" + skip() + "' in number");
+            addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
+            getNextChar();
+            return;
         }
 
-        addToken(TokenType.NUMBER, 
-                Double.parseDouble(source.substring(start, current)));  
+        addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
     }
-    
-    private Character skipNext(){
+
+    private Character skipNext() {
         if (current + 1 >= source.length()) return '\0';
         return source.charAt(current + 1);
     }
-    
+
     private Boolean isDigit(Character ch) {
-        return '0'<= ch && ch <= '9';
-    } 
+        return '0' <= ch && ch <= '9';
+    }
 
     private boolean isValidAfterDigit(Character ch) {
-        return ch != '(' && ch != ')' && 
-                ch != ' ' && ch != '\n' && ch != '\0';
+        return ch != '(' && ch != ')' && ch != ' ' && ch != '\n' && ch != '\0';
     }
 
     private Character skip() {

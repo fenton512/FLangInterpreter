@@ -8,13 +8,9 @@ public class Token {
     final int column;
     final int length;
 
-
     public Token(TokenType type, String source, Object literal, int line) {
         this.type = type;
-        this.source = source;
-        this.literal = literal;
-        this.line = line;
-        this.column = 0;
+        this.source = source; this.literal = literal; this.line = line; this.column = 0;
         this.length = 0;
     }
 
@@ -26,7 +22,6 @@ public class Token {
         }
         return literal;
     }
-
 
     public String toString() {
         return type + " " + source + " " + getLiteral();
