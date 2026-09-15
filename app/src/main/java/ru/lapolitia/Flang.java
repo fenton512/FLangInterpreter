@@ -14,7 +14,7 @@ public class Flang {
 
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
-            System.out.println("Usage: javac Flang.java && java Flang [path]");
+            System.out.println("Usage: ./run.sh [path]");
             System.exit(64);
         } else if (args.length == 1) {
             runFile(args[0]);
@@ -26,8 +26,7 @@ public class Flang {
     private static void runFile(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         run(new String(bytes, Charset.defaultCharset()));
-        if (hasError)
-            System.exit(2);
+        if (hasError) System.exit(2);
     }
 
     private static void runPrompt() throws IOException {
@@ -37,8 +36,7 @@ public class Flang {
         while (true) {
             System.out.print("> ");
             String line = reader.readLine();
-            if (line == null)
-                break;
+            if (line == null) break;
             run(line);
             // to prevent killing the user session
             hasError = false;
