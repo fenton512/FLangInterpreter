@@ -13,7 +13,7 @@ public class Flang {
 
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
-            System.out.println("VAH!");
+            System.out.println("Usage: javac Flang.java && java Flang [path]");
             System.exit(64);
         } else if (args.length == 1) {
             runFile(args[0]);
