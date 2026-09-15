@@ -16,8 +16,17 @@ public class Token {
         this.length = 0;
     }
 
+    public Object getLiteral() {
+        if (type == TokenType.NULL) {
+            return null;
+        } else if (literal == null) {
+            return "LIT_UNSPEC";
+        }
+        return literal;
+    }
+
 
     public String toString() {
-        return type + " " + source + " " + literal;
+        return type + " " + source + " " + getLiteral();
     }
 }

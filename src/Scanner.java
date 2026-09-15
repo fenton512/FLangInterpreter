@@ -78,7 +78,7 @@ public class Scanner {
         switch (ch) {
             case '(' -> addToken(TokenType.LEFT_PAREN);
             case ')' -> addToken(TokenType.RIGHT_PAREN);
-            case '.' -> addToken(TokenType.DOT);
+            case '\'' -> addToken(TokenType.QUOTE_SYM);
             case '-', '+' -> {
                 if (isDigit(skip())) {
                     getNextChar();
@@ -99,7 +99,7 @@ public class Scanner {
                    parceIdentifier();
                 }
                 else {
-                    Flang.reportError(line, "Unexpected character");
+                    Flang.reportError(line, "Unexpected character: " + ch);
                 }
             }
 
@@ -141,17 +141,26 @@ public class Scanner {
         while (isDigit(skip())) {
             getNextChar();
         }
+
         if (skip() == '.' && isDigit(skipNext())) {
             getNextChar();
-        } else if (skip() != '(' && skip() != ')') {
-           Flang.reportError(line, "Unexpected character in number");
+        } else if (isValidAfterDigit(skip())) {
+           Flang.reportError(line, "Unexpected character '" + skip() + "' in number");
            addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
            getNextChar();
            return;
         }
+
         while (isDigit(skip())) {
             getNextChar();
         }
+        if (isValidAfterDigit(skip())) {
+           Flang.reportError(line, "Unexpected character '" + skip() + "' in number");
+           addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
+           getNextChar();
+           return;
+        }
+
         addToken(TokenType.NUMBER, 
                 Double.parseDouble(source.substring(start, current)));  
     }
@@ -164,6 +173,11 @@ public class Scanner {
     private Boolean isDigit(Character ch) {
         return '0'<= ch && ch <= '9';
     } 
+
+    private boolean isValidAfterDigit(Character ch) {
+        return ch != '(' && ch != ')' && 
+                ch != ' ' && ch != '\n' && ch != '\0';
+    }
 
     private Character skip() {
         if (isEnd()) return '\0';
