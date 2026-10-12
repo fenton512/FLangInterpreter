@@ -7,4 +7,6 @@ build
 
 # Ignore Kotlin plugin data
 .kotlin
-run.sh
+
+
+.DS_Store
