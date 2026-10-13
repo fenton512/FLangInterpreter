@@ -59,6 +59,7 @@ public class Scanner implements Lexer {
     private int start = 0;
     private int current = 0;
     private int line = 1;
+    private Object currentValue;
 
     public Scanner(String source) {
         this.source = source;
@@ -66,14 +67,16 @@ public class Scanner implements Lexer {
 
     @Override
     public Object getLVal() {
-        return null;
+        return currentValue;
     }
 
     @Override
     public int yylex() throws java.io.IOException {
         start = current;
+        currentValue = null;
 
-        if (isEnd()) return mapper.mapToParser(TokenType.EOF);
+        if (isEnd())
+            return mapper.mapToParser(TokenType.EOF);
 
         char ch = getNextChar();
         switch (ch) {
@@ -99,12 +102,14 @@ public class Scanner implements Lexer {
                 }
             }
             case '/' -> {
-                while (skip() != '\n' && !isEnd()) getNextChar();
+                while (skip() != '\n' && !isEnd())
+                    getNextChar();
                 return yylex();
             }
 
             case ' ', '\r', '\t' -> {
-                while (skip() == ' ' || skip() == '\r' || skip() == '\t' && !isEnd()) getNextChar();
+                while (skip() == ' ' || skip() == '\r' || skip() == '\t' && !isEnd())
+                    getNextChar();
                 return yylex();
             }
 
@@ -147,11 +152,17 @@ public class Scanner implements Lexer {
         }
 
         if (type == TokenType.FALSE) {
+            currentValue = false;
             addToken(type, false);
             return mapper.mapToParser(TokenType.FALSE);
         } else if (type == TokenType.TRUE) {
+            currentValue = true;
             addToken(type, true);
             return mapper.mapToParser(TokenType.TRUE);
+        } else if (type == TokenType.IDENTIFIER) {
+            currentValue = text;
+            addToken(type, text);
+            return mapper.mapToParser(type);
         } else {
             addToken(type);
             return mapper.mapToParser(type);
@@ -184,7 +195,8 @@ public class Scanner implements Lexer {
                             + " detail: Unexpected character '"
                             + skip()
                             + "' in number");
-            addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
+            currentValue = Double.parseDouble(source.substring(start, current));
+            addToken(TokenType.NUMBER, currentValue);
             getNextChar();
             return Lexer.YYerror;
         }
@@ -199,17 +211,20 @@ public class Scanner implements Lexer {
                             + " detail: Unexpected character '"
                             + skip()
                             + "' in number");
-            addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
+            currentValue = Double.parseDouble(source.substring(start, current));
+            addToken(TokenType.NUMBER, currentValue);
             getNextChar();
             return Lexer.YYerror;
         }
 
-        addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
+        currentValue = Double.parseDouble(source.substring(start, current));
+        addToken(TokenType.NUMBER, currentValue);
         return mapper.mapToParser(TokenType.NUMBER);
     }
 
     private Character skipNext() {
-        if (current + 1 >= source.length()) return '\0';
+        if (current + 1 >= source.length())
+            return '\0';
         return source.charAt(current + 1);
     }
 
@@ -222,7 +237,8 @@ public class Scanner implements Lexer {
     }
 
     private Character skip() {
-        if (isEnd()) return '\0';
+        if (isEnd())
+            return '\0';
         return source.charAt(current);
     }
 
