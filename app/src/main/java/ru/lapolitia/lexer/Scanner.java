@@ -73,7 +73,8 @@ public class Scanner implements Lexer {
     public int yylex() throws java.io.IOException {
         start = current;
 
-        if (isEnd()) return mapper.mapToParser(TokenType.EOF);
+        if (isEnd())
+            return mapper.mapToParser(TokenType.EOF);
 
         char ch = getNextChar();
         switch (ch) {
@@ -99,12 +100,14 @@ public class Scanner implements Lexer {
                 }
             }
             case '/' -> {
-                while (skip() != '\n' && !isEnd()) getNextChar();
+                while (skip() != '\n' && !isEnd())
+                    getNextChar();
                 return yylex();
             }
 
             case ' ', '\r', '\t' -> {
-                while (skip() == ' ' || skip() == '\r' || skip() == '\t' && !isEnd()) getNextChar();
+                while (skip() == ' ' || skip() == '\r' || skip() == '\t' && !isEnd())
+                    getNextChar();
                 return yylex();
             }
 
@@ -116,7 +119,7 @@ public class Scanner implements Lexer {
             default -> {
                 if (isDigit(ch)) {
                     return parceNumber();
-                } else if (isLetter(ch)) {
+                } else if (isLetter(ch) || isSpecialChar(ch)) {
                     return parceIdentifier();
                 } else {
                     yyerror("Error in line " + line + " detail: Unexpected character: " + ch);
@@ -136,7 +139,7 @@ public class Scanner implements Lexer {
     }
 
     private int parceIdentifier() {
-        while (isLetterDigit(skip())) {
+        while (isIdentifierChar(skip())) {
             getNextChar();
         }
 
@@ -162,8 +165,12 @@ public class Scanner implements Lexer {
         return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
     }
 
-    private boolean isLetterDigit(char ch) {
-        return isDigit(ch) || isLetter(ch);
+    private boolean isSpecialChar(char ch) {
+        return ch == '_' || ch == '-' || ch == '?' || ch == '!';
+    }
+
+    private boolean isIdentifierChar(char ch) {
+        return isDigit(ch) || isLetter(ch) || isSpecialChar(ch);
     }
 
     private int parceNumber() {
@@ -205,7 +212,8 @@ public class Scanner implements Lexer {
     }
 
     private Character skipNext() {
-        if (current + 1 >= source.length()) return '\0';
+        if (current + 1 >= source.length())
+            return '\0';
         return source.charAt(current + 1);
     }
 
@@ -218,7 +226,8 @@ public class Scanner implements Lexer {
     }
 
     private Character skip() {
-        if (isEnd()) return '\0';
+        if (isEnd())
+            return '\0';
         return source.charAt(current);
     }
 

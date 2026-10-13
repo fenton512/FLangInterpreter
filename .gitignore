@@ -1,4 +1,6 @@
 /dist
+/app/bin/
+
 # Ignore Gradle project-specific cache directory
 .gradle
 
@@ -7,6 +9,5 @@ build
 
 # Ignore Kotlin plugin data
 .kotlin
-
 
 .DS_Store
