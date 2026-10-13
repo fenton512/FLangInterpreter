@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import ru.lapolitia.ast.AstPrinter;
 import ru.lapolitia.parser.Parser;
 
 public class Flang {
@@ -48,7 +49,7 @@ public class Flang {
     private static void run(String sourceCode) {
         Parser parser = new Parser(sourceCode);
         try {
-            parser.parse();
+            System.out.println(AstPrinter.print(parser.parse()));
             if (parser.hasErrors())
                 hasError = true;
         } catch (java.io.IOException e) {
