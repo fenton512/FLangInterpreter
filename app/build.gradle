@@ -69,7 +69,8 @@ def bisonExecutable = providers.gradleProperty('bisonExecutable')
     .orElse(providers.environmentVariable('BISON'))
     .orElse('bison')
 
-def generateParserSource = tasks.register('generateParserSource', Exec) {
+
+def generateParser = tasks.register('generateParser', Exec) {
     def grammarFile = layout.projectDirectory.file('../bison/FParser.y')
     def outputFile = layout.projectDirectory.file(
         'src/main/java/ru/lapolitia/parser/FParser.java'
@@ -88,13 +89,4 @@ def generateParserSource = tasks.register('generateParserSource', Exec) {
     args '--language=java',
          '-o', 'app/src/main/java/ru/lapolitia/parser/FParser.java',
          'bison/FParser.y'
-
-}
-
-tasks.named('spotlessJava') {
-    dependsOn generateParserSource
-}
-
-tasks.register('generateParser') {
-    dependsOn tasks.named('spotlessApply')
 }
