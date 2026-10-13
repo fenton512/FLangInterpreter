@@ -6,8 +6,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import ru.lapolitia.lexer.Scanner;
-import ru.lapolitia.parser.FParser;
+import ru.lapolitia.parser.Parser;
 
 public class Flang {
 
@@ -45,8 +44,7 @@ public class Flang {
     }
 
     private static void run(String sourceCode) {
-        Scanner scanner = new Scanner(sourceCode);
-        FParser parser = new FParser(scanner);
+        Parser parser = new Parser(sourceCode);
         try {
             parser.parse();
         } catch (java.io.IOException e) {

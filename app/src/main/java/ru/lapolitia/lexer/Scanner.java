@@ -75,8 +75,7 @@ public class Scanner implements Lexer {
         start = current;
         currentValue = null;
 
-        if (isEnd())
-            return mapper.mapToParser(TokenType.EOF);
+        if (isEnd()) return mapper.mapToParser(TokenType.EOF);
 
         char ch = getNextChar();
         switch (ch) {
@@ -102,14 +101,12 @@ public class Scanner implements Lexer {
                 }
             }
             case '/' -> {
-                while (skip() != '\n' && !isEnd())
-                    getNextChar();
+                while (skip() != '\n' && !isEnd()) getNextChar();
                 return yylex();
             }
 
             case ' ', '\r', '\t' -> {
-                while (skip() == ' ' || skip() == '\r' || skip() == '\t' && !isEnd())
-                    getNextChar();
+                while (skip() == ' ' || skip() == '\r' || skip() == '\t' && !isEnd()) getNextChar();
                 return yylex();
             }
 
@@ -223,8 +220,7 @@ public class Scanner implements Lexer {
     }
 
     private Character skipNext() {
-        if (current + 1 >= source.length())
-            return '\0';
+        if (current + 1 >= source.length()) return '\0';
         return source.charAt(current + 1);
     }
 
@@ -237,8 +233,7 @@ public class Scanner implements Lexer {
     }
 
     private Character skip() {
-        if (isEnd())
-            return '\0';
+        if (isEnd()) return '\0';
         return source.charAt(current);
     }
 
