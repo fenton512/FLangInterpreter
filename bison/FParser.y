@@ -1,6 +1,7 @@
 
 %language "Java"
 %define api.parser.class {FParser}
+%define api.package {ru.lapolitia.parser}
 %define api.parser.public
 %define parse.error detailed
 
@@ -12,7 +13,6 @@
 %token EQUAL NONEQUAL LESS LESSEQ GREATER GREATEREQ
 %token ISINT ISREAL ISBOOL ISNULL ISATOM ISLIST
 %token AND OR XOR NOT
-%token EOF
 
 %start program
 
@@ -43,7 +43,15 @@ literal
 /* Quote syntax: 'element or (quote element). */
 quoted_element
     : QUOTE_SYM element
+    | QUOTE_SYM operator_symbol
     | LEFT_PAREN QUOTE element RIGHT_PAREN
+    ;
+
+operator_symbol
+    : OP_PLUS
+    | OP_MINUS
+    | OP_TIMES
+    | OP_DIVIDE
     ;
 
 /* General lists and special forms. */

@@ -5,4 +5,4 @@
 (eval (1 2)) //error
 (eval '(times 2 2)) // 4
 (eval (times 2 2)) // 4
-(eval ((lambda () (cons times (cons 2 (cons 2 null)))))) // 4
+(eval ((lambda () (cons 'times (cons 2 (cons 2 null)))))) // 4
