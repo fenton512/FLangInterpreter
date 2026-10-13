@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import ru.lapolitia.main.Flang;
 import ru.lapolitia.parser.FParser.Lexer;
 import ru.lapolitia.parser.TokenMapper;
 
 public class Scanner implements Lexer {
     private final String source;
     private final List<Token> tokens = new ArrayList<>();
+    private final List<String> errors = new ArrayList<>();
 
     private static final Map<String, TokenType> keywords;
     private static final TokenMapper mapper;
@@ -70,12 +70,17 @@ public class Scanner implements Lexer {
         return currentValue;
     }
 
+    public List<String> getErrors() {
+        return List.copyOf(errors);
+    }
+
     @Override
     public int yylex() throws java.io.IOException {
         start = current;
         currentValue = null;
 
-        if (isEnd()) return mapper.mapToParser(TokenType.EOF);
+        if (isEnd())
+            return mapper.mapToParser(TokenType.EOF);
 
         char ch = getNextChar();
         switch (ch) {
@@ -101,12 +106,14 @@ public class Scanner implements Lexer {
                 }
             }
             case '/' -> {
-                while (skip() != '\n' && !isEnd()) getNextChar();
+                while (skip() != '\n' && !isEnd())
+                    getNextChar();
                 return yylex();
             }
 
             case ' ', '\r', '\t' -> {
-                while (skip() == ' ' || skip() == '\r' || skip() == '\t' && !isEnd()) getNextChar();
+                while (skip() == ' ' || skip() == '\r' || skip() == '\t' && !isEnd())
+                    getNextChar();
                 return yylex();
             }
 
@@ -130,7 +137,7 @@ public class Scanner implements Lexer {
 
     @Override
     public void yyerror(String msg) {
-        Flang.reportError(msg);
+        errors.add(msg);
     }
 
     private boolean isEnd() {
@@ -220,7 +227,8 @@ public class Scanner implements Lexer {
     }
 
     private Character skipNext() {
-        if (current + 1 >= source.length()) return '\0';
+        if (current + 1 >= source.length())
+            return '\0';
         return source.charAt(current + 1);
     }
 
@@ -233,7 +241,8 @@ public class Scanner implements Lexer {
     }
 
     private Character skip() {
-        if (isEnd()) return '\0';
+        if (isEnd())
+            return '\0';
         return source.charAt(current);
     }
 

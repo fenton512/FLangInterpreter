@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import ru.lapolitia.parser.ParseException;
 import ru.lapolitia.parser.Parser;
 
 public class Flang {
@@ -26,7 +27,8 @@ public class Flang {
     private static void runFile(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         run(new String(bytes, Charset.defaultCharset()));
-        if (hasError) System.exit(2);
+        if (hasError)
+            System.exit(2);
     }
 
     private static void runPrompt() throws IOException {
@@ -36,7 +38,8 @@ public class Flang {
         while (true) {
             System.out.print("> ");
             String line = reader.readLine();
-            if (line == null) break;
+            if (line == null)
+                break;
             run(line);
             // to prevent killing the user session
             hasError = false;
@@ -47,6 +50,9 @@ public class Flang {
         Parser parser = new Parser(sourceCode);
         try {
             parser.parse();
+        } catch (ParseException e) {
+            System.err.println(e.getMessage());
+            hasError = true;
         } catch (java.io.IOException e) {
             System.err.println(e.getMessage());
         }
