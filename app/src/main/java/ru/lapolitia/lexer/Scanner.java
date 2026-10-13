@@ -1,15 +1,19 @@
-package ru.lapolitia;
+package ru.lapolitia.lexer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import ru.lapolitia.main.Flang;
+import ru.lapolitia.parser.FParser.Lexer;
+import ru.lapolitia.parser.TokenMapper;
 
-public class Scanner {
+public class Scanner implements Lexer {
     private final String source;
     private final List<Token> tokens = new ArrayList<>();
 
     private static final Map<String, TokenType> keywords;
+    private static final TokenMapper mapper;
 
     static {
         keywords = new HashMap<>();
@@ -45,10 +49,11 @@ public class Scanner {
         keywords.put("or", TokenType.OR);
         keywords.put("xor", TokenType.XOR);
         keywords.put("not", TokenType.NOT);
-        keywords.put("eval", TokenType.EVAl);
+        keywords.put("eval", TokenType.EVAL);
         keywords.put("true", TokenType.TRUE);
         keywords.put("false", TokenType.FALSE);
         keywords.put("null", TokenType.NULL);
+        mapper = new TokenMapper();
     }
 
     private int start = 0;
@@ -59,54 +64,78 @@ public class Scanner {
         this.source = source;
     }
 
-    public List<Token> scanTokens() {
-        while (!isEnd()) {
-            // starts next lexeme
-            start = current;
-            scanToken();
+    @Override
+    public Object getLVal() {
+        return null;
+    }
+
+    @Override
+    public int yylex() throws java.io.IOException {
+        start = current;
+
+        if (isEnd()) return mapper.mapToParser(TokenType.EOF);
+
+        char ch = getNextChar();
+        switch (ch) {
+            case '(' -> {
+                addToken(TokenType.LEFT_PAREN);
+                return mapper.mapToParser(TokenType.LEFT_PAREN);
+            }
+            case ')' -> {
+                addToken(TokenType.RIGHT_PAREN);
+                return mapper.mapToParser(TokenType.RIGHT_PAREN);
+            }
+            case '\'' -> {
+                addToken(TokenType.QUOTE_SYM);
+                return mapper.mapToParser(TokenType.QUOTE_SYM);
+            }
+            case '-', '+' -> {
+                if (isDigit(skip())) {
+                    getNextChar();
+                    return parceNumber();
+                } else {
+                    yyerror("Error in line " + line + " detail: Unexpected " + ch);
+                    return Lexer.YYerror;
+                }
+            }
+            case '/' -> {
+                while (skip() != '\n' && !isEnd()) getNextChar();
+                return yylex();
+            }
+
+            case ' ', '\r', '\t' -> {
+                while (skip() == ' ' || skip() == '\r' || skip() == '\t' && !isEnd()) getNextChar();
+                return yylex();
+            }
+
+            case '\n' -> {
+                ++line;
+                return yylex();
+            }
+
+            default -> {
+                if (isDigit(ch)) {
+                    return parceNumber();
+                } else if (isLetter(ch)) {
+                    return parceIdentifier();
+                } else {
+                    yyerror("Error in line " + line + " detail: Unexpected character: " + ch);
+                    return Lexer.YYerror;
+                }
+            }
         }
-        tokens.add(new Token(TokenType.EOF, "", null, line));
-        return tokens;
+    }
+
+    @Override
+    public void yyerror(String msg) {
+        Flang.reportError(msg);
     }
 
     private boolean isEnd() {
         return current == source.length();
     }
 
-    private void scanToken() {
-        char ch = getNextChar();
-        switch (ch) {
-            case '(' -> addToken(TokenType.LEFT_PAREN);
-            case ')' -> addToken(TokenType.RIGHT_PAREN);
-            case '\'' -> addToken(TokenType.QUOTE_SYM);
-            case '-', '+' -> {
-                if (isDigit(skip())) {
-                    getNextChar();
-                    parceNumber();
-                } else {
-                    Flang.reportError(line, "Unexpected " + ch);
-                }
-            }
-            case '/' -> {
-                while (skip() != '\n' && !isEnd()) getNextChar();
-            }
-
-            case ' ', '\r', '\t' -> {}
-            case '\n' -> ++line;
-
-            default -> {
-                if (isDigit(ch)) {
-                    parceNumber();
-                } else if (isLetter(ch)) {
-                    parceIdentifier();
-                } else {
-                    Flang.reportError(line, "Unexpected character: " + ch);
-                }
-            }
-        }
-    }
-
-    private void parceIdentifier() {
+    private int parceIdentifier() {
         while (isLetterDigit(skip())) {
             getNextChar();
         }
@@ -119,10 +148,13 @@ public class Scanner {
 
         if (type == TokenType.FALSE) {
             addToken(type, false);
+            return mapper.mapToParser(TokenType.FALSE);
         } else if (type == TokenType.TRUE) {
             addToken(type, true);
+            return mapper.mapToParser(TokenType.TRUE);
         } else {
             addToken(type);
+            return mapper.mapToParser(type);
         }
     }
 
@@ -134,31 +166,32 @@ public class Scanner {
         return isDigit(ch) || isLetter(ch);
     }
 
-    private void parceNumber() {
+    private int parceNumber() {
         while (isDigit(skip())) {
             getNextChar();
         }
 
         if (skip() == '.' && isDigit(skipNext())) {
             getNextChar();
-        } else if (isValidAfterDigit(skip())) {
-            Flang.reportError(line, "Unexpected character '" + skip() + "' in number");
+        } else if (isInvalidAfterDigit(skip())) {
+            yyerror("Error in line " + line + " detail: Unexpected character '" + skip() + "' in number");
             addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
             getNextChar();
-            return;
+            return Lexer.YYerror;
         }
 
         while (isDigit(skip())) {
             getNextChar();
         }
-        if (isValidAfterDigit(skip())) {
-            Flang.reportError(line, "Unexpected character '" + skip() + "' in number");
+        if (isInvalidAfterDigit(skip())) {
+            yyerror("Error in line " + line + " detail: Unexpected character '" + skip() + "' in number");
             addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
             getNextChar();
-            return;
+            return Lexer.YYerror;
         }
 
         addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
+        return mapper.mapToParser(TokenType.NUMBER);
     }
 
     private Character skipNext() {
@@ -170,7 +203,7 @@ public class Scanner {
         return '0' <= ch && ch <= '9';
     }
 
-    private boolean isValidAfterDigit(Character ch) {
+    private boolean isInvalidAfterDigit(Character ch) {
         return ch != '(' && ch != ')' && ch != ' ' && ch != '\n' && ch != '\0';
     }
 

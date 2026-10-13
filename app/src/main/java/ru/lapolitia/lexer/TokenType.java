@@ -1,4 +1,4 @@
-package ru.lapolitia;
+package ru.lapolitia.lexer;
 
 public enum TokenType {
     QUOTE,
@@ -10,7 +10,7 @@ public enum TokenType {
     WHILE,
     RETURN,
     BREAK,
-    EVAl,
+    EVAL,
 
     LEFT_PAREN,
     RIGHT_PAREN,

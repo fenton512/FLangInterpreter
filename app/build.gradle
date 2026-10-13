@@ -36,7 +36,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'ru.lapolitia.Flang'
+    mainClass = 'ru.lapolitia.main.Flang'
 }
 
 tasks.named('test') {

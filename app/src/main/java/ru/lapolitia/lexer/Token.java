@@ -1,4 +1,4 @@
-package ru.lapolitia;
+package ru.lapolitia.lexer;
 
 public class Token {
     final TokenType type;

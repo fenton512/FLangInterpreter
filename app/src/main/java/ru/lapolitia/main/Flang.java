@@ -1,4 +1,4 @@
-package ru.lapolitia;
+package ru.lapolitia.main;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,7 +6,8 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
+import ru.lapolitia.lexer.Scanner;
+import ru.lapolitia.parser.FParser;
 
 public class Flang {
 
@@ -45,20 +46,26 @@ public class Flang {
 
     private static void run(String sourceCode) {
         Scanner scanner = new Scanner(sourceCode);
-        List<Token> tokens = scanner.scanTokens();
-
-        for (Token token : tokens) {
-            System.out.println(token);
+        FParser parser = new FParser(scanner);
+        try {
+            parser.parse();
+        } catch (java.io.IOException e) {
+            System.err.println(e.getMessage());
         }
     }
 
-    static void reportError(int line, String where, String message) {
+    public static void reportError(int line, String where, String message) {
         System.err.println("Error in line " + line + ": " + where + "detail" + message);
         hasError = true;
     }
 
-    static void reportError(int line, String message) {
+    public static void reportError(int line, String message) {
         System.err.println("Error in line " + line + " detail: " + message);
+        hasError = true;
+    }
+    
+    public static void reportError(String message) {
+        System.err.println("Error: " + message);
         hasError = true;
     }
 }
