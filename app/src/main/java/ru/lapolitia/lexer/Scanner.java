@@ -174,7 +174,12 @@ public class Scanner implements Lexer {
         if (skip() == '.' && isDigit(skipNext())) {
             getNextChar();
         } else if (isInvalidAfterDigit(skip())) {
-            yyerror("Error in line " + line + " detail: Unexpected character '" + skip() + "' in number");
+            yyerror(
+                    "Error in line "
+                            + line
+                            + " detail: Unexpected character '"
+                            + skip()
+                            + "' in number");
             addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
             getNextChar();
             return Lexer.YYerror;
@@ -184,7 +189,12 @@ public class Scanner implements Lexer {
             getNextChar();
         }
         if (isInvalidAfterDigit(skip())) {
-            yyerror("Error in line " + line + " detail: Unexpected character '" + skip() + "' in number");
+            yyerror(
+                    "Error in line "
+                            + line
+                            + " detail: Unexpected character '"
+                            + skip()
+                            + "' in number");
             addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
             getNextChar();
             return Lexer.YYerror;

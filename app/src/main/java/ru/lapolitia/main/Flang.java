@@ -63,7 +63,7 @@ public class Flang {
         System.err.println("Error in line " + line + " detail: " + message);
         hasError = true;
     }
-    
+
     public static void reportError(String message) {
         System.err.println("Error: " + message);
         hasError = true;

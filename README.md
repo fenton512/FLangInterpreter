@@ -1,4 +1,4 @@
-# FLangInterpreter
+./# FLangInterpreter
 > by LaPolicia
 
 # How to launch
