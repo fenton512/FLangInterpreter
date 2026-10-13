@@ -7,4 +7,12 @@ public sealed interface Expression
                 BooleanLiteral,
                 NullLiteral,
                 ListExpr,
-                QuoteExpr {}
+                QuoteExpr,
+                SetQ,
+                Func,
+                Lambda,
+                Prog,
+                Cond,
+                While,
+                Return,
+                Break {}

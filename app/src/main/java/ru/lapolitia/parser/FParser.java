@@ -45,16 +45,25 @@ import java.util.ArrayList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import ru.lapolitia.ast.BooleanLiteral;
+import ru.lapolitia.ast.Break;
+import ru.lapolitia.ast.Cond;
 import ru.lapolitia.ast.Expression;
+import ru.lapolitia.ast.Func;
 import ru.lapolitia.ast.Identifier;
+import ru.lapolitia.ast.Lambda;
 import ru.lapolitia.ast.ListExpr;
 import ru.lapolitia.ast.NullLiteral;
 import ru.lapolitia.ast.NumberLiteral;
 import ru.lapolitia.ast.Program;
 import ru.lapolitia.ast.QuoteExpr;
+import ru.lapolitia.ast.Return;
+import ru.lapolitia.ast.SetQ;
+import ru.lapolitia.ast.While;
+import ru.lapolitia.ast.Prog;
 
-/* "app/src/main/java/ru/lapolitia/parser/FParser.java":58  */
+/* "app/src/main/java/ru/lapolitia/parser/FParser.java":67  */
 
 /**
  * A Bison parser, automatically generated from <tt>bison/FParser.y</tt>.
@@ -589,552 +598,552 @@ public class FParser
       {
           case 2: /* program: element  */
   if (yyn == 2)
-    /* "bison/FParser.y":84  */
+    /* "bison/FParser.y":94  */
               { astRoot = new Program(List.of(((Expression)(yystack.valueAt (0))))); yyval = astRoot; };
   break;
 
 
   case 3: /* program: program element  */
   if (yyn == 3)
-    /* "bison/FParser.y":85  */
+    /* "bison/FParser.y":95  */
                       { astRoot = append(((Program)(yystack.valueAt (1))), ((Expression)(yystack.valueAt (0)))); yyval = astRoot; };
   break;
 
 
   case 4: /* element: IDENTIFIER  */
   if (yyn == 4)
-    /* "bison/FParser.y":90  */
+    /* "bison/FParser.y":100  */
                  { yyval = new Identifier(((String)(yystack.valueAt (0)))); };
   break;
 
 
   case 5: /* element: literal  */
   if (yyn == 5)
-    /* "bison/FParser.y":91  */
+    /* "bison/FParser.y":101  */
               { yyval = ((Expression)(yystack.valueAt (0))); };
   break;
 
 
   case 6: /* element: list  */
   if (yyn == 6)
-    /* "bison/FParser.y":92  */
+    /* "bison/FParser.y":102  */
            { yyval = ((Expression)(yystack.valueAt (0))); };
   break;
 
 
   case 7: /* element: quoted_element  */
   if (yyn == 7)
-    /* "bison/FParser.y":93  */
-                     { yyval = ((Expression)(yystack.valueAt (0))); };
+    /* "bison/FParser.y":103  */
+                     { yyval = ((QuoteExpr)(yystack.valueAt (0))); };
   break;
 
 
   case 8: /* literal: NUMBER  */
   if (yyn == 8)
-    /* "bison/FParser.y":98  */
+    /* "bison/FParser.y":108  */
              { yyval = new NumberLiteral(((Double)(yystack.valueAt (0)))); };
   break;
 
 
   case 9: /* literal: TRUE  */
   if (yyn == 9)
-    /* "bison/FParser.y":99  */
+    /* "bison/FParser.y":109  */
            { yyval = new BooleanLiteral(((Boolean)(yystack.valueAt (0)))); };
   break;
 
 
   case 10: /* literal: FALSE  */
   if (yyn == 10)
-    /* "bison/FParser.y":100  */
+    /* "bison/FParser.y":110  */
             { yyval = new BooleanLiteral(((Boolean)(yystack.valueAt (0)))); };
   break;
 
 
   case 11: /* literal: NULL  */
   if (yyn == 11)
-    /* "bison/FParser.y":101  */
+    /* "bison/FParser.y":111  */
            { yyval = new NullLiteral(); };
   break;
 
 
   case 12: /* quoted_element: QUOTE_SYM element  */
   if (yyn == 12)
-    /* "bison/FParser.y":106  */
+    /* "bison/FParser.y":116  */
                         { yyval = new QuoteExpr(((Expression)(yystack.valueAt (0)))); };
   break;
 
 
   case 13: /* quoted_element: QUOTE_SYM operator_symbol  */
   if (yyn == 13)
-    /* "bison/FParser.y":107  */
+    /* "bison/FParser.y":117  */
                                 { yyval = new QuoteExpr(((Identifier)(yystack.valueAt (0)))); };
   break;
 
 
   case 14: /* quoted_element: LEFT_PAREN QUOTE element RIGHT_PAREN  */
   if (yyn == 14)
-    /* "bison/FParser.y":108  */
+    /* "bison/FParser.y":118  */
                                            { yyval = new QuoteExpr(((Expression)(yystack.valueAt (1)))); };
   break;
 
 
   case 15: /* operator_symbol: arithmetic_operator  */
   if (yyn == 15)
-    /* "bison/FParser.y":112  */
+    /* "bison/FParser.y":122  */
                           { yyval = ((Identifier)(yystack.valueAt (0))); };
   break;
 
 
   case 16: /* arithmetic_operator: OP_PLUS  */
   if (yyn == 16)
-    /* "bison/FParser.y":116  */
+    /* "bison/FParser.y":126  */
               { yyval = new Identifier("plus"); };
   break;
 
 
   case 17: /* arithmetic_operator: OP_MINUS  */
   if (yyn == 17)
-    /* "bison/FParser.y":117  */
+    /* "bison/FParser.y":127  */
                { yyval = new Identifier("minus"); };
   break;
 
 
   case 18: /* arithmetic_operator: OP_TIMES  */
   if (yyn == 18)
-    /* "bison/FParser.y":118  */
+    /* "bison/FParser.y":128  */
                { yyval = new Identifier("times"); };
   break;
 
 
   case 19: /* arithmetic_operator: OP_DIVIDE  */
   if (yyn == 19)
-    /* "bison/FParser.y":119  */
+    /* "bison/FParser.y":129  */
                 { yyval = new Identifier("divide"); };
   break;
 
 
   case 20: /* list_unary_operator: HEAD  */
   if (yyn == 20)
-    /* "bison/FParser.y":123  */
+    /* "bison/FParser.y":133  */
            { yyval = new Identifier("head"); };
   break;
 
 
   case 21: /* list_unary_operator: TAIL  */
   if (yyn == 21)
-    /* "bison/FParser.y":124  */
+    /* "bison/FParser.y":134  */
            { yyval = new Identifier("tail"); };
   break;
 
 
   case 22: /* comparison_operator: EQUAL  */
   if (yyn == 22)
-    /* "bison/FParser.y":128  */
+    /* "bison/FParser.y":138  */
             { yyval = new Identifier("equal"); };
   break;
 
 
   case 23: /* comparison_operator: NONEQUAL  */
   if (yyn == 23)
-    /* "bison/FParser.y":129  */
+    /* "bison/FParser.y":139  */
                { yyval = new Identifier("nonequal"); };
   break;
 
 
   case 24: /* comparison_operator: LESS  */
   if (yyn == 24)
-    /* "bison/FParser.y":130  */
+    /* "bison/FParser.y":140  */
            { yyval = new Identifier("less"); };
   break;
 
 
   case 25: /* comparison_operator: LESSEQ  */
   if (yyn == 25)
-    /* "bison/FParser.y":131  */
+    /* "bison/FParser.y":141  */
              { yyval = new Identifier("lesseq"); };
   break;
 
 
   case 26: /* comparison_operator: GREATER  */
   if (yyn == 26)
-    /* "bison/FParser.y":132  */
+    /* "bison/FParser.y":142  */
               { yyval = new Identifier("greater"); };
   break;
 
 
   case 27: /* comparison_operator: GREATEREQ  */
   if (yyn == 27)
-    /* "bison/FParser.y":133  */
+    /* "bison/FParser.y":143  */
                 { yyval = new Identifier("greatereq"); };
   break;
 
 
   case 28: /* predicate_operator: ISINT  */
   if (yyn == 28)
-    /* "bison/FParser.y":137  */
+    /* "bison/FParser.y":147  */
             { yyval = new Identifier("isint"); };
   break;
 
 
   case 29: /* predicate_operator: ISREAL  */
   if (yyn == 29)
-    /* "bison/FParser.y":138  */
+    /* "bison/FParser.y":148  */
              { yyval = new Identifier("isreal"); };
   break;
 
 
   case 30: /* predicate_operator: ISBOOL  */
   if (yyn == 30)
-    /* "bison/FParser.y":139  */
+    /* "bison/FParser.y":149  */
              { yyval = new Identifier("isbool"); };
   break;
 
 
   case 31: /* predicate_operator: ISNULL  */
   if (yyn == 31)
-    /* "bison/FParser.y":140  */
+    /* "bison/FParser.y":150  */
              { yyval = new Identifier("isnull"); };
   break;
 
 
   case 32: /* predicate_operator: ISATOM  */
   if (yyn == 32)
-    /* "bison/FParser.y":141  */
+    /* "bison/FParser.y":151  */
              { yyval = new Identifier("isatom"); };
   break;
 
 
   case 33: /* predicate_operator: ISLIST  */
   if (yyn == 33)
-    /* "bison/FParser.y":142  */
+    /* "bison/FParser.y":152  */
              { yyval = new Identifier("islist"); };
   break;
 
 
   case 34: /* logical_operator: AND  */
   if (yyn == 34)
-    /* "bison/FParser.y":146  */
+    /* "bison/FParser.y":156  */
           { yyval = new Identifier("and"); };
   break;
 
 
   case 35: /* logical_operator: OR  */
   if (yyn == 35)
-    /* "bison/FParser.y":147  */
+    /* "bison/FParser.y":157  */
          { yyval = new Identifier("or"); };
   break;
 
 
   case 36: /* logical_operator: XOR  */
   if (yyn == 36)
-    /* "bison/FParser.y":148  */
+    /* "bison/FParser.y":158  */
           { yyval = new Identifier("xor"); };
   break;
 
 
   case 37: /* list: LEFT_PAREN element_list_opt RIGHT_PAREN  */
   if (yyn == 37)
-    /* "bison/FParser.y":153  */
+    /* "bison/FParser.y":163  */
                                               { yyval = ((ListExpr)(yystack.valueAt (1))); };
   break;
 
 
   case 38: /* list: setq_form  */
   if (yyn == 38)
-    /* "bison/FParser.y":154  */
-                { yyval = ((ListExpr)(yystack.valueAt (0))); };
+    /* "bison/FParser.y":164  */
+                { yyval = ((SetQ)(yystack.valueAt (0))); };
   break;
 
 
   case 39: /* list: func_form  */
   if (yyn == 39)
-    /* "bison/FParser.y":155  */
-                { yyval = ((ListExpr)(yystack.valueAt (0))); };
+    /* "bison/FParser.y":165  */
+                { yyval = ((Func)(yystack.valueAt (0))); };
   break;
 
 
   case 40: /* list: lambda_form  */
   if (yyn == 40)
-    /* "bison/FParser.y":156  */
-                  { yyval = ((ListExpr)(yystack.valueAt (0))); };
+    /* "bison/FParser.y":166  */
+                  { yyval = ((Lambda)(yystack.valueAt (0))); };
   break;
 
 
   case 41: /* list: prog_form  */
   if (yyn == 41)
-    /* "bison/FParser.y":157  */
-                { yyval = ((ListExpr)(yystack.valueAt (0))); };
+    /* "bison/FParser.y":167  */
+                { yyval = ((Prog)(yystack.valueAt (0))); };
   break;
 
 
   case 42: /* list: cond_form  */
   if (yyn == 42)
-    /* "bison/FParser.y":158  */
-                { yyval = ((ListExpr)(yystack.valueAt (0))); };
+    /* "bison/FParser.y":168  */
+                { yyval = ((Cond)(yystack.valueAt (0))); };
   break;
 
 
   case 43: /* list: while_form  */
   if (yyn == 43)
-    /* "bison/FParser.y":159  */
-                 { yyval = ((ListExpr)(yystack.valueAt (0))); };
+    /* "bison/FParser.y":169  */
+                 { yyval = ((While)(yystack.valueAt (0))); };
   break;
 
 
   case 44: /* list: return_form  */
   if (yyn == 44)
-    /* "bison/FParser.y":160  */
-                  { yyval = ((ListExpr)(yystack.valueAt (0))); };
+    /* "bison/FParser.y":170  */
+                  { yyval = ((Return)(yystack.valueAt (0))); };
   break;
 
 
   case 45: /* list: break_form  */
   if (yyn == 45)
-    /* "bison/FParser.y":161  */
-                 { yyval = ((ListExpr)(yystack.valueAt (0))); };
+    /* "bison/FParser.y":171  */
+                 { yyval = ((Break)(yystack.valueAt (0))); };
   break;
 
 
   case 46: /* list: arithmetic_call  */
   if (yyn == 46)
-    /* "bison/FParser.y":162  */
+    /* "bison/FParser.y":172  */
                       { yyval = ((ListExpr)(yystack.valueAt (0))); };
   break;
 
 
   case 47: /* list: list_call  */
   if (yyn == 47)
-    /* "bison/FParser.y":163  */
+    /* "bison/FParser.y":173  */
                 { yyval = ((ListExpr)(yystack.valueAt (0))); };
   break;
 
 
   case 48: /* list: comparison_call  */
   if (yyn == 48)
-    /* "bison/FParser.y":164  */
+    /* "bison/FParser.y":174  */
                       { yyval = ((ListExpr)(yystack.valueAt (0))); };
   break;
 
 
   case 49: /* list: predicate_call  */
   if (yyn == 49)
-    /* "bison/FParser.y":165  */
+    /* "bison/FParser.y":175  */
                      { yyval = ((ListExpr)(yystack.valueAt (0))); };
   break;
 
 
   case 50: /* list: logical_call  */
   if (yyn == 50)
-    /* "bison/FParser.y":166  */
+    /* "bison/FParser.y":176  */
                    { yyval = ((ListExpr)(yystack.valueAt (0))); };
   break;
 
 
   case 51: /* list: eval_call  */
   if (yyn == 51)
-    /* "bison/FParser.y":167  */
+    /* "bison/FParser.y":177  */
                 { yyval = ((ListExpr)(yystack.valueAt (0))); };
   break;
 
 
   case 52: /* element_list_opt: %empty  */
   if (yyn == 52)
-    /* "bison/FParser.y":172  */
+    /* "bison/FParser.y":182  */
              { yyval = new ListExpr(List.of()); };
   break;
 
 
   case 53: /* element_list_opt: element_list  */
   if (yyn == 53)
-    /* "bison/FParser.y":173  */
+    /* "bison/FParser.y":183  */
                    { yyval = ((ListExpr)(yystack.valueAt (0))); };
   break;
 
 
   case 54: /* element_list: element  */
   if (yyn == 54)
-    /* "bison/FParser.y":177  */
+    /* "bison/FParser.y":187  */
               { yyval = new ListExpr(List.of(((Expression)(yystack.valueAt (0))))); };
   break;
 
 
   case 55: /* element_list: element_list element  */
   if (yyn == 55)
-    /* "bison/FParser.y":178  */
+    /* "bison/FParser.y":188  */
                            { yyval = append(((ListExpr)(yystack.valueAt (1))), ((Expression)(yystack.valueAt (0)))); };
   break;
 
 
   case 56: /* setq_form: LEFT_PAREN SETQ IDENTIFIER element RIGHT_PAREN  */
   if (yyn == 56)
-    /* "bison/FParser.y":184  */
-            { yyval = listWithHead(new Identifier("setq"), new Identifier(((String)(yystack.valueAt (2)))), ((Expression)(yystack.valueAt (1)))); };
+    /* "bison/FParser.y":194  */
+            { yyval = new SetQ(new Identifier(((String)(yystack.valueAt (2)))), ((Expression)(yystack.valueAt (1)))); };
   break;
 
 
   case 57: /* func_form: LEFT_PAREN FUNC IDENTIFIER parameter_list element RIGHT_PAREN  */
   if (yyn == 57)
-    /* "bison/FParser.y":189  */
-            { yyval = listWithHead(new Identifier("func"), new Identifier(((String)(yystack.valueAt (3)))), ((ListExpr)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (1)))); };
+    /* "bison/FParser.y":199  */
+            { yyval = new Func(new Identifier(((String)(yystack.valueAt (3)))), ((ListExpr)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (1)))); };
   break;
 
 
   case 58: /* lambda_form: LEFT_PAREN LAMBDA parameter_list element RIGHT_PAREN  */
   if (yyn == 58)
-    /* "bison/FParser.y":194  */
-            { yyval = listWithHead(new Identifier("lambda"), ((ListExpr)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (1)))); };
+    /* "bison/FParser.y":204  */
+            { yyval = new Lambda(((ListExpr)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (1)))); };
   break;
 
 
   case 59: /* prog_form: LEFT_PAREN PROG parameter_list element_sequence RIGHT_PAREN  */
   if (yyn == 59)
-    /* "bison/FParser.y":199  */
-            { yyval = progList(((ListExpr)(yystack.valueAt (2))), ((ListExpr)(yystack.valueAt (1)))); };
+    /* "bison/FParser.y":209  */
+            { yyval = new Prog(((ListExpr)(yystack.valueAt (2))), ((ListExpr)(yystack.valueAt (1)))); };
   break;
 
 
   case 60: /* cond_form: LEFT_PAREN COND element element RIGHT_PAREN  */
   if (yyn == 60)
-    /* "bison/FParser.y":204  */
-            { yyval = listWithHead(new Identifier("cond"), ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (1)))); };
+    /* "bison/FParser.y":214  */
+            { yyval = new Cond(((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (1))), Optional.empty()); };
   break;
 
 
   case 61: /* cond_form: LEFT_PAREN COND element element element RIGHT_PAREN  */
   if (yyn == 61)
-    /* "bison/FParser.y":206  */
-            { yyval = listWithHead(new Identifier("cond"), ((Expression)(yystack.valueAt (3))), ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (1)))); };
+    /* "bison/FParser.y":216  */
+            { yyval = new Cond(((Expression)(yystack.valueAt (3))), ((Expression)(yystack.valueAt (2))), Optional.of(((Expression)(yystack.valueAt (1))))); };
   break;
 
 
   case 62: /* while_form: LEFT_PAREN WHILE element element RIGHT_PAREN  */
   if (yyn == 62)
-    /* "bison/FParser.y":211  */
-            { yyval = listWithHead(new Identifier("while"), ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (1)))); };
+    /* "bison/FParser.y":221  */
+            { yyval = new While(((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (1)))); };
   break;
 
 
   case 63: /* return_form: LEFT_PAREN RETURN element RIGHT_PAREN  */
   if (yyn == 63)
-    /* "bison/FParser.y":216  */
-            { yyval = listWithHead(new Identifier("return"), ((Expression)(yystack.valueAt (1)))); };
+    /* "bison/FParser.y":226  */
+            { yyval = new Return(((Expression)(yystack.valueAt (1)))); };
   break;
 
 
   case 64: /* break_form: LEFT_PAREN BREAK RIGHT_PAREN  */
   if (yyn == 64)
-    /* "bison/FParser.y":221  */
-            { yyval = listWithHead(new Identifier("break")); };
+    /* "bison/FParser.y":231  */
+            { yyval = new Break(); };
   break;
 
 
   case 65: /* parameter_list: LEFT_PAREN identifier_list_opt RIGHT_PAREN  */
   if (yyn == 65)
-    /* "bison/FParser.y":226  */
+    /* "bison/FParser.y":236  */
                                                  { yyval = ((ListExpr)(yystack.valueAt (1))); };
   break;
 
 
   case 66: /* identifier_list_opt: %empty  */
   if (yyn == 66)
-    /* "bison/FParser.y":230  */
+    /* "bison/FParser.y":240  */
              { yyval = new ListExpr(List.of()); };
   break;
 
 
   case 67: /* identifier_list_opt: identifier_list  */
   if (yyn == 67)
-    /* "bison/FParser.y":231  */
+    /* "bison/FParser.y":241  */
                       { yyval = ((ListExpr)(yystack.valueAt (0))); };
   break;
 
 
   case 68: /* identifier_list: IDENTIFIER  */
   if (yyn == 68)
-    /* "bison/FParser.y":235  */
+    /* "bison/FParser.y":245  */
                  { yyval = new ListExpr(List.of(new Identifier(((String)(yystack.valueAt (0)))))); };
   break;
 
 
   case 69: /* identifier_list: identifier_list IDENTIFIER  */
   if (yyn == 69)
-    /* "bison/FParser.y":236  */
+    /* "bison/FParser.y":246  */
                                  { yyval = append(((ListExpr)(yystack.valueAt (1))), new Identifier(((String)(yystack.valueAt (0))))); };
   break;
 
 
   case 70: /* element_sequence: element  */
   if (yyn == 70)
-    /* "bison/FParser.y":241  */
+    /* "bison/FParser.y":251  */
               { yyval = new ListExpr(List.of(((Expression)(yystack.valueAt (0))))); };
   break;
 
 
   case 71: /* element_sequence: element_sequence element  */
   if (yyn == 71)
-    /* "bison/FParser.y":242  */
+    /* "bison/FParser.y":252  */
                                { yyval = append(((ListExpr)(yystack.valueAt (1))), ((Expression)(yystack.valueAt (0)))); };
   break;
 
 
   case 72: /* arithmetic_call: LEFT_PAREN arithmetic_operator element element RIGHT_PAREN  */
   if (yyn == 72)
-    /* "bison/FParser.y":248  */
+    /* "bison/FParser.y":258  */
             { yyval = listWithHead(((Identifier)(yystack.valueAt (3))), ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (1)))); };
   break;
 
 
   case 73: /* list_call: LEFT_PAREN list_unary_operator element RIGHT_PAREN  */
   if (yyn == 73)
-    /* "bison/FParser.y":253  */
+    /* "bison/FParser.y":263  */
             { yyval = listWithHead(((Identifier)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (1)))); };
   break;
 
 
   case 74: /* list_call: LEFT_PAREN CONS element element RIGHT_PAREN  */
   if (yyn == 74)
-    /* "bison/FParser.y":255  */
+    /* "bison/FParser.y":265  */
             { yyval = listWithHead(new Identifier("cons"), ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (1)))); };
   break;
 
 
   case 75: /* comparison_call: LEFT_PAREN comparison_operator element element RIGHT_PAREN  */
   if (yyn == 75)
-    /* "bison/FParser.y":260  */
+    /* "bison/FParser.y":270  */
             { yyval = listWithHead(((Identifier)(yystack.valueAt (3))), ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (1)))); };
   break;
 
 
   case 76: /* predicate_call: LEFT_PAREN predicate_operator element RIGHT_PAREN  */
   if (yyn == 76)
-    /* "bison/FParser.y":265  */
+    /* "bison/FParser.y":275  */
             { yyval = listWithHead(((Identifier)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (1)))); };
   break;
 
 
   case 77: /* logical_call: LEFT_PAREN logical_operator element element RIGHT_PAREN  */
   if (yyn == 77)
-    /* "bison/FParser.y":270  */
+    /* "bison/FParser.y":280  */
             { yyval = listWithHead(((Identifier)(yystack.valueAt (3))), ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (1)))); };
   break;
 
 
   case 78: /* logical_call: LEFT_PAREN NOT element RIGHT_PAREN  */
   if (yyn == 78)
-    /* "bison/FParser.y":272  */
+    /* "bison/FParser.y":282  */
             { yyval = listWithHead(new Identifier("not"), ((Expression)(yystack.valueAt (1)))); };
   break;
 
 
   case 79: /* eval_call: LEFT_PAREN EVAL element RIGHT_PAREN  */
   if (yyn == 79)
-    /* "bison/FParser.y":277  */
+    /* "bison/FParser.y":287  */
             { yyval = listWithHead(new Identifier("eval"), ((Expression)(yystack.valueAt (1)))); };
   break;
 
 
 
-/* "app/src/main/java/ru/lapolitia/parser/FParser.java":1138  */
+/* "app/src/main/java/ru/lapolitia/parser/FParser.java":1147  */
 
         default: break;
       }
@@ -1791,7 +1800,7 @@ private static final byte[] yycheck_ = yycheck_init();
   private static final int YYNTOKENS_ = 44;
 
 /* Unqualified %code blocks.  */
-/* "bison/FParser.y":21  */
+/* "bison/FParser.y":30  */
 
     private Program astRoot;
 
@@ -1818,16 +1827,9 @@ private static final byte[] yycheck_ = yycheck_init();
         return new Program(expressions);
     }
 
-    private static ListExpr progList(ListExpr parameters, ListExpr body) {
-        List<Expression> elements = new ArrayList<>();
-        elements.add(new Identifier("prog"));
-        elements.add(parameters);
-        elements.addAll(body.elements());
-        return new ListExpr(elements);
-    }
 
-/* "app/src/main/java/ru/lapolitia/parser/FParser.java":1830  */
+/* "app/src/main/java/ru/lapolitia/parser/FParser.java":1832  */
 
 }
-/* "bison/FParser.y":280  */
+/* "bison/FParser.y":290  */
 

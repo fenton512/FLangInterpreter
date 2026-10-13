@@ -8,14 +8,23 @@
 %code imports {
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import ru.lapolitia.ast.BooleanLiteral;
+import ru.lapolitia.ast.Break;
+import ru.lapolitia.ast.Cond;
 import ru.lapolitia.ast.Expression;
+import ru.lapolitia.ast.Func;
 import ru.lapolitia.ast.Identifier;
+import ru.lapolitia.ast.Lambda;
 import ru.lapolitia.ast.ListExpr;
 import ru.lapolitia.ast.NullLiteral;
 import ru.lapolitia.ast.NumberLiteral;
 import ru.lapolitia.ast.Program;
 import ru.lapolitia.ast.QuoteExpr;
+import ru.lapolitia.ast.Return;
+import ru.lapolitia.ast.SetQ;
+import ru.lapolitia.ast.While;
+import ru.lapolitia.ast.Prog;
 }
 
 %code {
@@ -44,13 +53,6 @@ import ru.lapolitia.ast.QuoteExpr;
         return new Program(expressions);
     }
 
-    private static ListExpr progList(ListExpr parameters, ListExpr body) {
-        List<Expression> elements = new ArrayList<>();
-        elements.add(new Identifier("prog"));
-        elements.add(parameters);
-        elements.addAll(body.elements());
-        return new ListExpr(elements);
-    }
 }
 
 %token QUOTE SETQ FUNC LAMBDA PROG COND WHILE RETURN BREAK EVAL
@@ -66,14 +68,22 @@ import ru.lapolitia.ast.QuoteExpr;
 %token AND OR XOR NOT
 
 %type <Program> program
-%type <Expression> element literal list quoted_element
+%type <Expression> element literal list
+%type <QuoteExpr> quoted_element
 %type <Identifier> operator_symbol arithmetic_operator list_unary_operator
 %type <Identifier> comparison_operator predicate_operator logical_operator
-%type <ListExpr> element_list_opt element_list setq_form func_form lambda_form
-%type <ListExpr> prog_form cond_form while_form return_form break_form
-%type <ListExpr> arithmetic_call list_call comparison_call predicate_call
-%type <ListExpr> logical_call eval_call parameter_list identifier_list_opt
+%type <ListExpr> element_list_opt element_list parameter_list identifier_list_opt
 %type <ListExpr> identifier_list element_sequence
+%type <SetQ> setq_form
+%type <Func> func_form
+%type <Lambda> lambda_form
+%type <Prog> prog_form
+%type <Cond> cond_form
+%type <While> while_form
+%type <Return> return_form
+%type <Break> break_form
+%type <ListExpr> arithmetic_call list_call comparison_call predicate_call
+%type <ListExpr> logical_call eval_call
 
 %start program
 
@@ -181,44 +191,44 @@ element_list
 /* Special forms with their required argument counts. */
 setq_form
         : LEFT_PAREN SETQ IDENTIFIER element RIGHT_PAREN
-            { $$ = listWithHead(new Identifier("setq"), new Identifier($3), $4); }
+            { $$ = new SetQ(new Identifier($3), $4); }
     ;
 
 func_form
         : LEFT_PAREN FUNC IDENTIFIER parameter_list element RIGHT_PAREN
-            { $$ = listWithHead(new Identifier("func"), new Identifier($3), $4, $5); }
+            { $$ = new Func(new Identifier($3), $4, $5); }
     ;
 
 lambda_form
         : LEFT_PAREN LAMBDA parameter_list element RIGHT_PAREN
-            { $$ = listWithHead(new Identifier("lambda"), $3, $4); }
+            { $$ = new Lambda($3, $4); }
     ;
 
 prog_form
         : LEFT_PAREN PROG parameter_list element_sequence RIGHT_PAREN
-            { $$ = progList($3, $4); }
+            { $$ = new Prog($3, $4); }
     ;
 
 cond_form
         : LEFT_PAREN COND element element RIGHT_PAREN
-            { $$ = listWithHead(new Identifier("cond"), $3, $4); }
+            { $$ = new Cond($3, $4, Optional.empty()); }
         | LEFT_PAREN COND element element element RIGHT_PAREN
-            { $$ = listWithHead(new Identifier("cond"), $3, $4, $5); }
+            { $$ = new Cond($3, $4, Optional.of($5)); }
     ;
 
 while_form
         : LEFT_PAREN WHILE element element RIGHT_PAREN
-            { $$ = listWithHead(new Identifier("while"), $3, $4); }
+            { $$ = new While($3, $4); }
     ;
 
 return_form
         : LEFT_PAREN RETURN element RIGHT_PAREN
-            { $$ = listWithHead(new Identifier("return"), $3); }
+            { $$ = new Return($3); }
     ;
 
 break_form
         : LEFT_PAREN BREAK RIGHT_PAREN
-            { $$ = listWithHead(new Identifier("break")); }
+            { $$ = new Break(); }
     ;
 
 /* Parameter/local-variable list: (x y z) or (). */
