@@ -63,3 +63,38 @@ spotless {
     formatAnnotations()
   }
 }
+
+
+def bisonExecutable = providers.gradleProperty('bisonExecutable')
+    .orElse(providers.environmentVariable('BISON'))
+    .orElse('bison')
+
+def generateParserSource = tasks.register('generateParserSource', Exec) {
+    def grammarFile = layout.projectDirectory.file('../bison/FParser.y')
+    def outputFile = layout.projectDirectory.file(
+        'src/main/java/ru/lapolitia/parser/FParser.java'
+    )
+
+    inputs.file(grammarFile)
+    outputs.file(outputFile)
+
+    workingDir rootProject.projectDir
+    executable = bisonExecutable.get()
+    doFirst {
+        logger.lifecycle(
+            'If Bison fails, try selecting another executable with -PbisonExecutable=/path/to/bison.'
+        )
+    }
+    args '--language=java',
+         '-o', 'app/src/main/java/ru/lapolitia/parser/FParser.java',
+         'bison/FParser.y'
+
+}
+
+tasks.named('spotlessJava') {
+    dependsOn generateParserSource
+}
+
+tasks.register('generateParser') {
+    dependsOn tasks.named('spotlessApply')
+}

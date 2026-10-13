@@ -633,7 +633,7 @@ public class FParser {
 
         switch (yyn) {
 
-            /* "./app/src/main/java/ru/lapolitia/parser/FParser.java":565  */
+            /* "app/src/main/java/ru/lapolitia/parser/FParser.java":565  */
 
             default:
                 break;
