@@ -8,6 +8,7 @@ import ru.lapolitia.lexer.Scanner;
 public class Parser {
     private final Scanner scanner;
     private final FParser generatedParser;
+    private boolean parseFailed;
 
     public Parser(String source) {
         scanner = new Scanner(source);
@@ -18,19 +19,25 @@ public class Parser {
         return scanner.getErrors();
     }
 
+    public boolean hasErrors() {
+        return parseFailed;
+    }
+
     public Program parse() throws IOException {
         boolean succeeded = generatedParser.parse();
         List<String> errors = getErrors();
-        if (!succeeded || generatedParser.getNumberOfErrors() > 0 || !errors.isEmpty()) {
-            String message = errors.isEmpty()
-                    ? "Parsing failed"
-                    : String.join(System.lineSeparator(), errors);
-            throw new ParseException(message);
+        parseFailed = !succeeded || generatedParser.getNumberOfErrors() > 0 || !errors.isEmpty();
+        if (parseFailed) {
+            if (errors.isEmpty()) {
+                System.err.println("Parsing failed");
+            } else {
+                errors.forEach(System.err::println);
+            }
         }
 
         Program astRoot = generatedParser.getAstRoot();
         if (astRoot == null) {
-            throw new ParseException("Parser did not produce an AST");
+            return new Program(List.of());
         }
         return astRoot;
     }

@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import ru.lapolitia.parser.ParseException;
 import ru.lapolitia.parser.Parser;
 
 public class Flang {
@@ -50,9 +49,8 @@ public class Flang {
         Parser parser = new Parser(sourceCode);
         try {
             parser.parse();
-        } catch (ParseException e) {
-            System.err.println(e.getMessage());
-            hasError = true;
+            if (parser.hasErrors())
+                hasError = true;
         } catch (java.io.IOException e) {
             System.err.println(e.getMessage());
         }
