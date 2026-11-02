@@ -1,5 +1,7 @@
 package ru.lapolitia.ast;
 
+import ru.lapolitia.semantic.AstVisitor;
+
 public sealed interface Expression
         permits Program,
                 Identifier,
@@ -15,4 +17,6 @@ public sealed interface Expression
                 Cond,
                 While,
                 Return,
-                Break {}
+                Break {
+    void accept(AstVisitor visitor);
+}

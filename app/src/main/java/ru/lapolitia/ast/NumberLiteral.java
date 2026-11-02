@@ -1,3 +1,10 @@
 package ru.lapolitia.ast;
 
-public record NumberLiteral(double value) implements Expression {}
+import ru.lapolitia.semantic.AstVisitor;
+
+public record NumberLiteral(double value) implements Expression {
+    @Override
+    public void accept(AstVisitor visitor) {
+        visitor.visitNumberLiteral(this);
+    }
+}

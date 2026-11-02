@@ -1,3 +1,10 @@
 package ru.lapolitia.ast;
 
-public record Break() implements Expression {}
+import ru.lapolitia.semantic.AstVisitor;
+
+public record Break() implements Expression {
+    @Override
+    public void accept(AstVisitor visitor) {
+        visitor.visitBreak(this);
+    }
+}

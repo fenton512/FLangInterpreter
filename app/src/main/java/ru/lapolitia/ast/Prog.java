@@ -1,3 +1,10 @@
 package ru.lapolitia.ast;
 
-public record Prog(ListExpr locals, ListExpr body) implements Expression {}
+import ru.lapolitia.semantic.AstVisitor;
+
+public record Prog(ListExpr locals, ListExpr body) implements Expression {
+    @Override
+    public void accept(AstVisitor visitor) {
+        visitor.visitProg(this);
+    }
+}

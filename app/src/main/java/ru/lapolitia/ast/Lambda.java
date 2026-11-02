@@ -1,3 +1,10 @@
 package ru.lapolitia.ast;
 
-public record Lambda(ListExpr parameters, Expression body) implements Expression {}
+import ru.lapolitia.semantic.AstVisitor;
+
+public record Lambda(ListExpr parameters, Expression body) implements Expression {
+    @Override
+    public void accept(AstVisitor visitor) {
+        visitor.visitLambda(this);
+    }
+}
