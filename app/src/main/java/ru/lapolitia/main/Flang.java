@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
 import ru.lapolitia.ast.AstPrinter;
 import ru.lapolitia.ast.Program;
 import ru.lapolitia.parser.Parser;
@@ -70,11 +69,10 @@ public class Flang {
                 return;
             }
 
-                Program transformedProgram =
-                    (Program) program.accept(new ExpressionSimplifier());
-                transformedProgram = (Program) transformedProgram.accept(new UnusedVariableRemover());
+            Program transformedProgram = (Program) program.accept(new ExpressionSimplifier());
+            transformedProgram = (Program) transformedProgram.accept(new UnusedVariableRemover());
             System.out.println(AstPrinter.print(transformedProgram));
-                semanticErrors = new SemanticAnalyzer().analyze(transformedProgram);
+            semanticErrors = new SemanticAnalyzer().analyze(transformedProgram);
             if (!semanticErrors.isEmpty()) {
                 for (SemanticError error : semanticErrors) {
                     System.err.println("Semantic error: " + error.message());
