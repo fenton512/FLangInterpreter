@@ -1,0 +1,13 @@
+// globals, parameters, local setq variables, and shadowing
+(setq value 10)
+(func addLocal (value)
+    ((setq localValue 5)
+     (plus value localValue)))
+(addLocal value)
+
+// a nested local binding shadows the global value
+(func shadowValue (value)
+    (prog (value)
+        ((setq value 20)
+         value)))
+(shadowValue value)

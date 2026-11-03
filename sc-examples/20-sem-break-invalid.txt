@@ -1,0 +1,7 @@
+// break is invalid outside while
+(break)
+
+// a function has its own execution context
+(while true
+    (func invalidBreak ()
+        (break)))

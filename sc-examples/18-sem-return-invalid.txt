@@ -1,0 +1,2 @@
+// return is invalid at program level
+(return 1)

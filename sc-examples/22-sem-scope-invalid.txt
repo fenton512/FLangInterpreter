@@ -1,0 +1,14 @@
+// variable is used before declaration
+(plus missingValue 1)
+(setq missingValue 2)
+
+// function is called before declaration
+(unknownFunction 1)
+(func unknownFunction (value)
+    value)
+
+// local variable does not escape its function
+(func makeLocal ()
+    ((setq localValue 1)
+     localValue))
+localValue

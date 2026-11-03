@@ -1,0 +1,9 @@
+// return is valid inside a function
+(func identity (value)
+    (return value))
+
+// return is also valid inside prog
+(func localReturn ()
+    (prog (value)
+        ((setq value 1)
+         (return value))))

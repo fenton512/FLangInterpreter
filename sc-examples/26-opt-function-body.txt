@@ -1,0 +1,4 @@
+// constant expressions are simplified inside function bodies
+(func calculate (value)
+    ((setq result (plus 2 3))
+     (plus result value)))

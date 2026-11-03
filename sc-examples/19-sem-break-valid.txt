@@ -1,0 +1,8 @@
+// break is valid inside while
+(while true
+    (break))
+
+// break is valid inside a nested prog in while
+(while true
+    (prog ()
+        ((break))))

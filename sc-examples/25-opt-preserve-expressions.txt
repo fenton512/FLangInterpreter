@@ -1,0 +1,4 @@
+// unsafe or non-constant expressions must remain unchanged
+(func f (x) (divide 5 x))
+(plus (f 2) 1)
+'(plus 2 3)

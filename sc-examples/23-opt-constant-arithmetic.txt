@@ -1,0 +1,3 @@
+// nested arithmetic is folded to one number
+(plus 5 (times 2 3))
+(setq total (minus 10 (divide 8 2)))

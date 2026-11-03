@@ -1,0 +1,18 @@
+// safe unused binding can be removed
+(setq unused 1)
+(setq used 2)
+(plus used 3)
+
+// function calls are preserved even when their result is not read
+(func sideEffect () 1)
+(setq sideEffectResult (sideEffect))
+
+// captured variables and used locals remain
+(func makeClosure ()
+    ((setq captured 10)
+     (lambda () captured)))
+
+(prog (dead live)
+    ((setq dead 1)
+     (setq live 2)
+     live))

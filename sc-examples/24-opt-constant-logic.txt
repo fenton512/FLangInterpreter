@@ -1,0 +1,5 @@
+// comparisons and logical expressions are folded to booleans
+(less 3 5)
+(and true (not false))
+(equal null null)
+(nonequal true false)
