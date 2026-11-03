@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import ru.lapolitia.ast.AstPrinter;
 import ru.lapolitia.parser.Parser;
+import ru.lapolitia.semantic.SemanticAnalyzer;
+import ru.lapolitia.semantic.SemanticError;
 
 public class Flang {
 
@@ -47,8 +49,17 @@ public class Flang {
     private static void run(String sourceCode) {
         Parser parser = new Parser(sourceCode);
         try {
-            System.out.println(AstPrinter.print(parser.parse()));
-            if (parser.hasErrors()) hasError = true;
+            var program = parser.parse();
+            System.out.println(AstPrinter.print(program));
+            if (parser.hasErrors()) {
+                hasError = true;
+                return;
+            }
+
+            for (SemanticError error : new SemanticAnalyzer().analyze(program)) {
+                System.err.println("Semantic error: " + error.message());
+                hasError = true;
+            }
         } catch (java.io.IOException e) {
             System.err.println(e.getMessage());
         }

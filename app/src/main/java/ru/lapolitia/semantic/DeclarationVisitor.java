@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import ru.lapolitia.ast.Break;
 import ru.lapolitia.ast.Cond;
 import ru.lapolitia.ast.Expression;
@@ -23,43 +22,44 @@ import ru.lapolitia.ast.SetQ;
 import ru.lapolitia.ast.While;
 
 public final class DeclarationVisitor extends AbstractAstVisitor {
-    private static final Set<String> BUILT_IN_NAMES = Set.of(
-            "quote",
-            "setq",
-            "func",
-            "lambda",
-            "prog",
-            "cond",
-            "while",
-            "return",
-            "break",
-            "eval",
-            "plus",
-            "minus",
-            "times",
-            "divide",
-            "head",
-            "tail",
-            "cons",
-            "equal",
-            "nonequal",
-            "less",
-            "lesseq",
-            "greater",
-            "greatereq",
-            "isint",
-            "isreal",
-            "isbool",
-            "isnull",
-            "isatom",
-            "islist",
-            "and",
-            "or",
-            "xor",
-            "not",
-            "true",
-            "false",
-            "null");
+    private static final Set<String> BUILT_IN_NAMES =
+            Set.of(
+                    "quote",
+                    "setq",
+                    "func",
+                    "lambda",
+                    "prog",
+                    "cond",
+                    "while",
+                    "return",
+                    "break",
+                    "eval",
+                    "plus",
+                    "minus",
+                    "times",
+                    "divide",
+                    "head",
+                    "tail",
+                    "cons",
+                    "equal",
+                    "nonequal",
+                    "less",
+                    "lesseq",
+                    "greater",
+                    "greatereq",
+                    "isint",
+                    "isreal",
+                    "isbool",
+                    "isnull",
+                    "isatom",
+                    "islist",
+                    "and",
+                    "or",
+                    "xor",
+                    "not",
+                    "true",
+                    "false",
+                    "null");
 
     private final List<SemanticError> errors = new ArrayList<>();
     private final Deque<Map<String, SymbolKind>> scopes = new ArrayDeque<>();
@@ -174,7 +174,10 @@ public final class DeclarationVisitor extends AbstractAstVisitor {
     }
 
     private void declareParameters(ListExpr parameters) {
-        parameters.elements().forEach(parameter -> declare(((Identifier) parameter).name(), SymbolKind.VARIABLE));
+        parameters
+                .elements()
+                .forEach(
+                        parameter -> declare(((Identifier) parameter).name(), SymbolKind.VARIABLE));
     }
 
     private void declare(String name, SymbolKind kind) {

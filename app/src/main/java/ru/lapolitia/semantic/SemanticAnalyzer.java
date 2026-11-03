@@ -2,7 +2,6 @@ package ru.lapolitia.semantic;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import ru.lapolitia.ast.Program;
 
 public final class SemanticAnalyzer {
