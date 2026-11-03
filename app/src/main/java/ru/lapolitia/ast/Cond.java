@@ -1,6 +1,7 @@
 package ru.lapolitia.ast;
 
 import java.util.Optional;
+import ru.lapolitia.semantic.AstTransformer;
 import ru.lapolitia.semantic.AstVisitor;
 
 public record Cond(Expression condition, Expression consequent, Optional<Expression> alternative)
@@ -8,5 +9,10 @@ public record Cond(Expression condition, Expression consequent, Optional<Express
     @Override
     public void accept(AstVisitor visitor) {
         visitor.visitCond(this);
+    }
+
+    @Override
+    public Expression accept(AstTransformer transformer) {
+        return transformer.transformCond(this);
     }
 }
