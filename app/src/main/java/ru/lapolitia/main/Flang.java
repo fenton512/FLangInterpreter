@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import ru.lapolitia.ast.AstPrinter;
 import ru.lapolitia.parser.Parser;
+import ru.lapolitia.semantic.ExpressionSimplifier;
 import ru.lapolitia.semantic.SemanticAnalyzer;
 import ru.lapolitia.semantic.SemanticError;
 
@@ -50,16 +51,32 @@ public class Flang {
         Parser parser = new Parser(sourceCode);
         try {
             var program = parser.parse();
-            System.out.println(AstPrinter.print(program));
             if (parser.hasErrors()) {
+                System.out.println(AstPrinter.print(program));
                 hasError = true;
                 return;
             }
 
-            for (SemanticError error : new SemanticAnalyzer().analyze(program)) {
-                System.err.println("Semantic error: " + error.message());
-                hasError = true;
+            System.out.println(AstPrinter.print(program));
+            var semanticErrors = new SemanticAnalyzer().analyze(program);
+            if (!semanticErrors.isEmpty()) {
+                for (SemanticError error : semanticErrors) {
+                    System.err.println("Semantic error: " + error.message());
+                    hasError = true;
+                }
+                return;
             }
+
+            var transformedProgram = program.accept(new ExpressionSimplifier());
+            System.out.println(AstPrinter.print(transformedProgram));
+            semanticErrors = new SemanticAnalyzer().analyze(program);
+            if (!semanticErrors.isEmpty()) {
+                for (SemanticError error : semanticErrors) {
+                    System.err.println("Semantic error: " + error.message());
+                    hasError = true;
+                }
+            }
+
         } catch (java.io.IOException e) {
             System.err.println(e.getMessage());
         }
