@@ -25,23 +25,34 @@ public class Flang {
 
     public static void main(String[] args) throws IOException {
         Interpreter interpreter = new Interpreter();
-        if (args.length > 1) {
-            System.out.println("Usage: ./run.sh [path]");
-            System.exit(64);
-        } else if (args.length == 1) {
-            runFile(args[0], interpreter);
+        boolean verbose = false;
+        String path = null;
+        for (String arg : args) {
+            if (arg.equals("-v") || arg.equals("--verbose")) {
+                verbose = true;
+            } else if (path == null && !arg.startsWith("-")) {
+                path = arg;
+            } else {
+                System.out.println("Usage: ./run.sh [-v] [path]");
+                System.exit(64);
+            }
+        }
+
+        if (path != null) {
+            runFile(path, interpreter, verbose);
         } else {
-            runPrompt(interpreter);
+            runPrompt(interpreter, verbose);
         }
     }
 
-    private static void runFile(String path, Interpreter interpreter) throws IOException {
+    private static void runFile(String path, Interpreter interpreter, boolean verbose)
+            throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
-        run(new String(bytes, Charset.defaultCharset()), interpreter, true);
+        run(new String(bytes, Charset.defaultCharset()), interpreter, true, verbose);
         if (hasError) System.exit(2);
     }
 
-    private static void runPrompt(Interpreter interpreter) throws IOException {
+    private static void runPrompt(Interpreter interpreter, boolean verbose) throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
 
@@ -49,18 +60,21 @@ public class Flang {
             System.out.print("> ");
             String line = reader.readLine();
             if (line == null) break;
-            run(line, interpreter, false);
+            run(line, interpreter, false, verbose);
             // to prevent killing the user session
             hasError = false;
         }
     }
 
-    private static void run(String sourceCode, Interpreter interpreter, boolean checkAndOptimize) {
+    private static void run(
+            String sourceCode, Interpreter interpreter, boolean checkAndOptimize, boolean verbose) {
         Parser parser = new Parser(sourceCode);
         try {
             var program = parser.parse();
             if (parser.hasErrors()) {
-                System.out.println(AstPrinter.print(program));
+                if (verbose) {
+                    System.out.println(AstPrinter.print(program));
+                }
                 hasError = true;
                 return;
             }
@@ -68,12 +82,16 @@ public class Flang {
             if (!checkAndOptimize) {
                 // Prompt mode is a persistent REPL, so static checks and optimizations are
                 // intentionally skipped: definitions from earlier lines are not in this program.
-                System.out.println(AstPrinter.print(program));
+                if (verbose) {
+                    System.out.println(AstPrinter.print(program));
+                }
                 reportValues(interpreter.evaluateAll(program));
                 return;
             }
 
-            System.out.println(AstPrinter.print(program));
+            if (verbose) {
+                System.out.println(AstPrinter.print(program));
+            }
             var semanticErrors = new SemanticAnalyzer().analyze(program);
             if (!semanticErrors.isEmpty()) {
                 reportSemanticErrors(semanticErrors);
@@ -82,8 +100,10 @@ public class Flang {
 
             Program transformedProgram = (Program) program.accept(new ExpressionSimplifier());
             transformedProgram = (Program) transformedProgram.accept(new UnusedVariableRemover());
-            System.out.println(new String(new char[40]).replace('\0', '*'));
-            System.out.println(AstPrinter.print(transformedProgram));
+            if (verbose) {
+                System.out.println(new String(new char[40]).replace('\0', '*'));
+                System.out.println(AstPrinter.print(transformedProgram));
+            }
             semanticErrors = new SemanticAnalyzer().analyze(transformedProgram);
             if (!semanticErrors.isEmpty()) {
                 reportSemanticErrors(semanticErrors);

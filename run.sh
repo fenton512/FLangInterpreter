@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Run the FLang interpreter without Gradle noise.
 # Rebuilds only if sources changed, then launches the plain launcher.
+# Usage: ./run.sh [-v] [path]
+#   -v, --verbose  print the parsed AST and, for files, the optimized AST
 set -euo pipefail
 cd "$(dirname "$0")"
 
