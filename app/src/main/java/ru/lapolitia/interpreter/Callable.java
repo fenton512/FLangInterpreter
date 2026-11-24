@@ -1,0 +1,6 @@
+package ru.lapolitia.interpreter;
+
+/** Values that can appear in the head of an application. */
+public interface Callable {
+    String name();
+}

@@ -7,8 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import ru.lapolitia.ast.Break;
-import ru.lapolitia.ast.Cond;
+import ru.lapolitia.ast.AstShapes;
 import ru.lapolitia.ast.Expression;
 import ru.lapolitia.ast.Func;
 import ru.lapolitia.ast.Identifier;
@@ -17,9 +16,7 @@ import ru.lapolitia.ast.ListExpr;
 import ru.lapolitia.ast.Prog;
 import ru.lapolitia.ast.Program;
 import ru.lapolitia.ast.QuoteExpr;
-import ru.lapolitia.ast.Return;
 import ru.lapolitia.ast.SetQ;
-import ru.lapolitia.ast.While;
 
 public final class DeclarationVisitor extends AbstractAstVisitor {
     private static final Set<String> BUILT_IN_NAMES =
@@ -39,6 +36,7 @@ public final class DeclarationVisitor extends AbstractAstVisitor {
                     "times",
                     "divide",
                     "head",
+                    "first",
                     "tail",
                     "cons",
                     "equal",
@@ -150,27 +148,11 @@ public final class DeclarationVisitor extends AbstractAstVisitor {
     public void visitQuoteExpr(QuoteExpr expression) {}
 
     private void visitFunctionBody(Expression body) {
-        if (body instanceof ListExpr list && isSequence(list)) {
+        if (body instanceof ListExpr list && AstShapes.isSequence(list)) {
             list.elements().forEach(child -> child.accept(this));
         } else {
             body.accept(this);
         }
-    }
-
-    private boolean isSequence(ListExpr expression) {
-        if (expression.elements().isEmpty()) {
-            return false;
-        }
-        Expression first = expression.elements().get(0);
-        return first instanceof Break
-                || first instanceof Cond
-                || first instanceof Func
-                || first instanceof Lambda
-                || first instanceof ListExpr
-                || first instanceof Prog
-                || first instanceof Return
-                || first instanceof SetQ
-                || first instanceof While;
     }
 
     private void declareParameters(ListExpr parameters) {

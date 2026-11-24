@@ -196,7 +196,7 @@ public class Scanner implements Lexer {
                             + " detail: Unexpected character '"
                             + skip()
                             + "' in number");
-            currentValue = Double.parseDouble(source.substring(start, current));
+            currentValue = numberToken();
             addToken(TokenType.NUMBER, currentValue);
             getNextChar();
             return Lexer.YYerror;
@@ -212,15 +212,20 @@ public class Scanner implements Lexer {
                             + " detail: Unexpected character '"
                             + skip()
                             + "' in number");
-            currentValue = Double.parseDouble(source.substring(start, current));
+            currentValue = numberToken();
             addToken(TokenType.NUMBER, currentValue);
             getNextChar();
             return Lexer.YYerror;
         }
 
-        currentValue = Double.parseDouble(source.substring(start, current));
+        currentValue = numberToken();
         addToken(TokenType.NUMBER, currentValue);
         return mapper.mapToParser(TokenType.NUMBER);
+    }
+
+    private NumberToken numberToken() {
+        String text = source.substring(start, current);
+        return new NumberToken(Double.parseDouble(text), !text.contains("."));
     }
 
     private Character skipNext() {

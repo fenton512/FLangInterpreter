@@ -13,12 +13,12 @@ import ru.lapolitia.ast.While;
 
 public final class ContextVisitor extends AbstractAstVisitor {
     private final List<SemanticError> errors = new ArrayList<>();
-    private int localContextDepth;
+    private int returnDepth;
     private int loopDepth;
 
     public List<SemanticError> analyze(Program program) {
         errors.clear();
-        localContextDepth = 0;
+        returnDepth = 0;
         loopDepth = 0;
         program.accept(this);
         return List.copyOf(errors);
@@ -40,7 +40,7 @@ public final class ContextVisitor extends AbstractAstVisitor {
     @Override
     public void visitProg(Prog expression) {
         expression.locals().accept(this);
-        visitExistingExecutionContext(expression.body());
+        visitExistingReturnContext(expression.body());
     }
 
     @Override
@@ -53,8 +53,8 @@ public final class ContextVisitor extends AbstractAstVisitor {
 
     @Override
     public void visitReturn(Return expression) {
-        if (localContextDepth == 0) {
-            errors.add(new SemanticError("return used outside a local context"));
+        if (returnDepth == 0) {
+            errors.add(new SemanticError("return used outside a function or prog"));
         }
         expression.value().accept(this);
     }
@@ -68,22 +68,22 @@ public final class ContextVisitor extends AbstractAstVisitor {
 
     private void visitNewLocalContext(Expression body) {
         int previousLoopDepth = loopDepth;
-        localContextDepth++;
+        returnDepth++;
         loopDepth = 0;
         try {
             body.accept(this);
         } finally {
             loopDepth = previousLoopDepth;
-            localContextDepth--;
+            returnDepth--;
         }
     }
 
-    private void visitExistingExecutionContext(Expression body) {
-        localContextDepth++;
+    private void visitExistingReturnContext(Expression body) {
+        returnDepth++;
         try {
             body.accept(this);
         } finally {
-            localContextDepth--;
+            returnDepth--;
         }
     }
 }

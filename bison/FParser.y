@@ -25,6 +25,7 @@ import ru.lapolitia.ast.Return;
 import ru.lapolitia.ast.SetQ;
 import ru.lapolitia.ast.While;
 import ru.lapolitia.ast.Prog;
+import ru.lapolitia.lexer.NumberToken;
 }
 
 %code {
@@ -58,7 +59,7 @@ import ru.lapolitia.ast.Prog;
 %token QUOTE SETQ FUNC LAMBDA PROG COND WHILE RETURN BREAK EVAL
 %token LEFT_PAREN RIGHT_PAREN QUOTE_SYM
 %token NULL
-%token <Double> NUMBER
+%token <NumberToken> NUMBER
 %token <String> IDENTIFIER
 %token <Boolean> TRUE FALSE
 %token OP_PLUS OP_MINUS OP_TIMES OP_DIVIDE
@@ -105,7 +106,7 @@ element
 
 /* Literals. The lexer may include the sign in NUMBER. */
 literal
-    : NUMBER { $$ = new NumberLiteral($1); }
+    : NUMBER { $$ = new NumberLiteral($1.value(), $1.isInt()); }
     | TRUE { $$ = new BooleanLiteral($1); }
     | FALSE { $$ = new BooleanLiteral($1); }
     | NULL { $$ = new NullLiteral(); }

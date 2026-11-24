@@ -50,7 +50,10 @@ public final class AstPrinter {
 
     private static String label(Expression expression) {
         if (expression instanceof Identifier identifier) return "Identifier: " + identifier.name();
-        if (expression instanceof NumberLiteral number) return "NumberLiteral: " + number.value();
+        if (expression instanceof NumberLiteral number) {
+            return "NumberLiteral: "
+                    + (number.isInt() ? Long.toString((long) number.value()) : number.value());
+        }
         if (expression instanceof BooleanLiteral bool) return "BooleanLiteral: " + bool.value();
         if (expression instanceof NullLiteral) return "NullLiteral";
         if (expression instanceof Program) return "Program";

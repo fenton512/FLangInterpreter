@@ -6,9 +6,13 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
+import java.util.List;
 import ru.lapolitia.ast.AstPrinter;
 import ru.lapolitia.ast.Program;
+import ru.lapolitia.interpreter.Interpreter;
+import ru.lapolitia.interpreter.RuntimeError;
+import ru.lapolitia.interpreter.Value;
+import ru.lapolitia.interpreter.ValuePrinter;
 import ru.lapolitia.parser.Parser;
 import ru.lapolitia.semantic.ExpressionSimplifier;
 import ru.lapolitia.semantic.SemanticAnalyzer;
@@ -20,23 +24,24 @@ public class Flang {
     private static boolean hasError = false;
 
     public static void main(String[] args) throws IOException {
+        Interpreter interpreter = new Interpreter();
         if (args.length > 1) {
             System.out.println("Usage: ./run.sh [path]");
             System.exit(64);
         } else if (args.length == 1) {
-            runFile(args[0]);
+            runFile(args[0], interpreter);
         } else {
-            runPrompt();
+            runPrompt(interpreter);
         }
     }
 
-    private static void runFile(String path) throws IOException {
+    private static void runFile(String path, Interpreter interpreter) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
-        run(new String(bytes, Charset.defaultCharset()));
+        run(new String(bytes, Charset.defaultCharset()), interpreter, true);
         if (hasError) System.exit(2);
     }
 
-    private static void runPrompt() throws IOException {
+    private static void runPrompt(Interpreter interpreter) throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
 
@@ -44,13 +49,13 @@ public class Flang {
             System.out.print("> ");
             String line = reader.readLine();
             if (line == null) break;
-            run(line);
+            run(line, interpreter, false);
             // to prevent killing the user session
             hasError = false;
         }
     }
 
-    private static void run(String sourceCode) {
+    private static void run(String sourceCode, Interpreter interpreter, boolean checkAndOptimize) {
         Parser parser = new Parser(sourceCode);
         try {
             var program = parser.parse();
@@ -60,13 +65,18 @@ public class Flang {
                 return;
             }
 
+            if (!checkAndOptimize) {
+                // Prompt mode is a persistent REPL, so static checks and optimizations are
+                // intentionally skipped: definitions from earlier lines are not in this program.
+                System.out.println(AstPrinter.print(program));
+                reportValues(interpreter.evaluateAll(program));
+                return;
+            }
+
             System.out.println(AstPrinter.print(program));
             var semanticErrors = new SemanticAnalyzer().analyze(program);
             if (!semanticErrors.isEmpty()) {
-                for (SemanticError error : semanticErrors) {
-                    System.err.println("Semantic error: " + error.message());
-                    hasError = true;
-                }
+                reportSemanticErrors(semanticErrors);
                 return;
             }
 
@@ -76,14 +86,31 @@ public class Flang {
             System.out.println(AstPrinter.print(transformedProgram));
             semanticErrors = new SemanticAnalyzer().analyze(transformedProgram);
             if (!semanticErrors.isEmpty()) {
-                for (SemanticError error : semanticErrors) {
-                    System.err.println("Semantic error: " + error.message());
-                    hasError = true;
-                }
+                reportSemanticErrors(semanticErrors);
+                return;
             }
+
+            reportValues(interpreter.evaluateAll(transformedProgram));
 
         } catch (java.io.IOException e) {
             System.err.println(e.getMessage());
+            hasError = true;
+        } catch (RuntimeError e) {
+            System.err.println("Runtime error: " + e.getMessage());
+            hasError = true;
+        }
+    }
+
+    private static void reportValues(List<Value> results) {
+        for (Value result : results) {
+            System.out.println("=> " + ValuePrinter.format(result));
+        }
+    }
+
+    private static void reportSemanticErrors(List<SemanticError> semanticErrors) {
+        for (SemanticError error : semanticErrors) {
+            System.err.println("Semantic error: " + error.message());
+            hasError = true;
         }
     }
 

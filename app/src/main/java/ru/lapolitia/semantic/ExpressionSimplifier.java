@@ -55,6 +55,19 @@ public final class ExpressionSimplifier extends AbstractAstTransformer {
             return original;
         }
 
+        if (left.isInt() && right.isInt()) {
+            long leftValue = (long) left.value();
+            long rightValue = (long) right.value();
+            long result =
+                    switch (operation) {
+                        case ADD -> leftValue + rightValue;
+                        case SUBTRACT -> leftValue - rightValue;
+                        case MULTIPLY -> leftValue * rightValue;
+                        case DIVIDE -> leftValue / rightValue;
+                    };
+            return new NumberLiteral(result, true);
+        }
+
         double result =
                 switch (operation) {
                     case ADD -> left.value() + right.value();
@@ -62,7 +75,7 @@ public final class ExpressionSimplifier extends AbstractAstTransformer {
                     case MULTIPLY -> left.value() * right.value();
                     case DIVIDE -> left.value() / right.value();
                 };
-        return new NumberLiteral(result);
+        return new NumberLiteral(result, false);
     }
 
     private Expression simplifyEquality(
