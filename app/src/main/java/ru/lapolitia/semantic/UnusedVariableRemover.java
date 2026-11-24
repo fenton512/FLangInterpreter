@@ -62,6 +62,9 @@ public final class UnusedVariableRemover extends AbstractAstTransformer {
                     && !usedNames.contains(setQ.name().name())
                     && isSafeValue(setQ.value())
                     && !last) {
+                // Drop the assignment, but keep its value so the enclosing sequence keeps its
+                // shape and result.
+                result.add(setQ.value());
                 continue;
             }
             result.add(expression);

@@ -105,7 +105,7 @@ class InterpreterTest {
     }
 
     @Test
-    void progReturnsNullWithoutReturnAndKeepsItsOwnFrame() throws IOException {
+    void progReturnsLastBodyValueAndKeepsItsOwnFrame() throws IOException {
         String source =
                 """
                 (setq x 1)
@@ -114,7 +114,7 @@ class InterpreterTest {
                     x)
                 (plus x 0)
                 """;
-        assertEquals(List.of("1", "null", "1"), evalAll(source));
+        assertEquals(List.of("1", "2", "1"), evalAll(source));
 
         String withReturn =
                 """

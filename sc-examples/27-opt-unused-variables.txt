@@ -12,6 +12,7 @@
     ((setq captured 10)
      (lambda () captured)))
 
+(setq live 1)
 (prog (dead live)
     ((setq dead 1)
      (setq live 2)

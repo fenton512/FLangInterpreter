@@ -4,7 +4,7 @@
 (func shadowingTest (arg1)
   ((setq arg2 5)
   (plus arg1 arg2)))
-shadowingTest(5) // (5 10)
+(shadowingTest 5) // (5 10)
 (plus arg1 arg2) // 30
 
 (func shadowingTestv2 (arg1)

@@ -70,4 +70,39 @@ class OptimizerEquivalenceTest {
         assertEquals("1", evaluate(original));
         assertEquals("1", evaluate(optimized));
     }
+
+    @Test
+    void optimizerDoesNotTurnSequenceIntoCallWhenRemovingUnusedSetq() throws IOException {
+        String source =
+                """
+                (setq dead 0)
+                (setq live 2)
+                (prog (dead live)
+                    ((setq dead 1)
+                     live))
+                """;
+        Program original = parse(source);
+        Program optimized = optimize(original);
+
+        assertEquals("(1 2)", evaluate(original));
+        assertEquals(evaluate(original), evaluate(optimized));
+    }
+
+    @Test
+    void optimizerPreservesSequenceValueWhenRemovingMiddleUnusedSetq() throws IOException {
+        String source =
+                """
+                (setq dead 0)
+                (setq live 2)
+                (prog (dead live)
+                    ((plus live 0)
+                     (setq dead 1)
+                     live))
+                """;
+        Program original = parse(source);
+        Program optimized = optimize(original);
+
+        assertEquals("(2 1 2)", evaluate(original));
+        assertEquals(evaluate(original), evaluate(optimized));
+    }
 }

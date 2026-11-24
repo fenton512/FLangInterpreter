@@ -3,11 +3,11 @@
   (plus (plus a b ) c))
 (func doAdd3 (lst b c)
   (lst b c -2))
-(doAdd3 add3 2 5) //8
+(doAdd3 add3 2 5) //5
 
 (func doAdd3v2 (fn arg1 arg2)
   (fn arg1 arg2 -2))
-(doAdd3v2 (lambda (a1 a2 a3) (plus (plus a1 a2) a3)) 2 5) //8
+(doAdd3v2 (lambda (a1 a2 a3) (plus (plus a1 a2) a3)) 2 5) //5
 
 
 //evaluating a func then calls it

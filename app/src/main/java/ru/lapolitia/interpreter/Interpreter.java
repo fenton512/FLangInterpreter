@@ -175,14 +175,15 @@ public final class Interpreter {
             }
         }
 
+        Value result = Values.NULL;
         try {
             for (Expression expression : prog.body().elements()) {
-                eval(expression, frame);
+                result = eval(expression, frame);
             }
         } catch (ReturnSignal signal) {
             return signal.value();
         }
-        return Values.NULL;
+        return result;
     }
 
     private Value evalCond(Cond cond, Environment environment) {
