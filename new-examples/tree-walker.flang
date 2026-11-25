@@ -25,3 +25,21 @@
 )
 
 (dfs-fold (eval 'plus) 0 tree)
+
+(func reversed (lst) (
+    (func helper (lst rev) 
+        (cond
+            (isnull lst) rev
+            (helper (tail lst) (cons (head lst) rev))
+        )
+    )
+    (return (helper lst null))
+))
+
+(func flattened (tree)
+    (
+        (func flat (acc cur) (cons cur acc))
+        (return (reversed (dfs-fold flat null tree)))
+    )
+)
+(flattened tree)

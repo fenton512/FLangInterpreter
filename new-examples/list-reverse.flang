@@ -1,0 +1,14 @@
+(setq lst '(1 2 3 4 5))
+
+(func reversed (lst) (
+    (func helper (lst rev) 
+        (cond
+            (isnull lst) rev
+            (helper (tail lst) (cons (head lst) rev))
+        )
+    )
+    (return (helper lst null))
+))
+
+
+(reversed lst)
