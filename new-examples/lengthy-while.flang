@@ -1,0 +1,8 @@
+(func lengthy-while (cap)
+    (
+        (while (greater cap 0) (setq cap (minus cap 1)))
+        (return 'finished)
+    )
+)
+
+(lengthy-while 10000000)

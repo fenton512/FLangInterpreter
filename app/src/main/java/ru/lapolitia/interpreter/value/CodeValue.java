@@ -1,4 +1,4 @@
-package ru.lapolitia.interpreter;
+package ru.lapolitia.interpreter.value;
 
 import java.util.Objects;
 import ru.lapolitia.ast.Expression;

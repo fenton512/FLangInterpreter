@@ -1,4 +1,4 @@
-package ru.lapolitia.interpreter;
+package ru.lapolitia.interpreter.value;
 
 /** Runtime value of a FLang program. */
 public sealed interface Value

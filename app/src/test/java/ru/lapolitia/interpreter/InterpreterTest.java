@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import ru.lapolitia.ast.Program;
+import ru.lapolitia.interpreter.value.ValuePrinter;
 import ru.lapolitia.parser.Parser;
 
 class InterpreterTest {

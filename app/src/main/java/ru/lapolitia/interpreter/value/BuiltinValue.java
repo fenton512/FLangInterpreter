@@ -1,7 +1,9 @@
-package ru.lapolitia.interpreter;
+package ru.lapolitia.interpreter.value;
 
 import java.util.List;
 import java.util.Objects;
+import ru.lapolitia.interpreter.Environment;
+import ru.lapolitia.interpreter.builtin.BuiltinFunction;
 
 public record BuiltinValue(String name, int arity, BuiltinFunction function)
         implements Value, Callable {

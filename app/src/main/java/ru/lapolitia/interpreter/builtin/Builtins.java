@@ -1,7 +1,17 @@
-package ru.lapolitia.interpreter;
+package ru.lapolitia.interpreter.builtin;
 
 import java.util.ArrayList;
 import java.util.List;
+import ru.lapolitia.interpreter.Environment;
+import ru.lapolitia.interpreter.RuntimeError;
+import ru.lapolitia.interpreter.value.BoolValue;
+import ru.lapolitia.interpreter.value.BuiltinValue;
+import ru.lapolitia.interpreter.value.IntValue;
+import ru.lapolitia.interpreter.value.ListValue;
+import ru.lapolitia.interpreter.value.NullValue;
+import ru.lapolitia.interpreter.value.RealValue;
+import ru.lapolitia.interpreter.value.Value;
+import ru.lapolitia.interpreter.value.Values;
 
 /** Registers the predefined functions in the global environment. */
 public final class Builtins {

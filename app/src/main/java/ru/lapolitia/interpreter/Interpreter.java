@@ -19,6 +19,19 @@ import ru.lapolitia.ast.QuoteExpr;
 import ru.lapolitia.ast.Return;
 import ru.lapolitia.ast.SetQ;
 import ru.lapolitia.ast.While;
+import ru.lapolitia.interpreter.builtin.Builtins;
+import ru.lapolitia.interpreter.value.BoolValue;
+import ru.lapolitia.interpreter.value.BuiltinValue;
+import ru.lapolitia.interpreter.value.Callable;
+import ru.lapolitia.interpreter.value.ClosureValue;
+import ru.lapolitia.interpreter.value.CodeValue;
+import ru.lapolitia.interpreter.value.IntValue;
+import ru.lapolitia.interpreter.value.ListValue;
+import ru.lapolitia.interpreter.value.NullValue;
+import ru.lapolitia.interpreter.value.RealValue;
+import ru.lapolitia.interpreter.value.SymbolValue;
+import ru.lapolitia.interpreter.value.Value;
+import ru.lapolitia.interpreter.value.Values;
 
 /** Tree-walking evaluator for the FLang AST. */
 public final class Interpreter {
@@ -31,6 +44,25 @@ public final class Interpreter {
 
     public Environment globalEnvironment() {
         return global;
+    }
+
+    private final class BreakSignal extends RuntimeException {
+        private BreakSignal() {
+            super(null, null, false, false);
+        }
+    }
+
+    private final class ReturnSignal extends RuntimeException {
+        private final Value value;
+
+        private ReturnSignal(Value value) {
+            super(null, null, false, false);
+            this.value = value;
+        }
+
+        private Value value() {
+            return value;
+        }
     }
 
     /** Evaluates every top-level expression and returns their values in order. */

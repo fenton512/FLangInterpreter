@@ -1,0 +1,27 @@
+(setq tree
+    '(4
+      (2
+       (1 null null)
+       (3 null null))
+      (6
+       null
+       (7 null null))))
+
+(func dfs-fold (f acc tree)
+    (cond
+        (isnull tree)
+        acc
+        (
+            (setq rest (tail tree))
+            (setq value (head tree))
+            (setq left (head rest))
+            (setq right (head (tail rest)))
+
+            (setq next-acc (f acc value))
+            (setq next-acc (dfs-fold f next-acc left))
+            (return (dfs-fold f next-acc right))  // that is required to return single value, not list
+        )
+    )
+)
+
+(dfs-fold (eval 'plus) 0 tree)

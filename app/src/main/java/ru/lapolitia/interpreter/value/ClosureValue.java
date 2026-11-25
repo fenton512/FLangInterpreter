@@ -1,8 +1,9 @@
-package ru.lapolitia.interpreter;
+package ru.lapolitia.interpreter.value;
 
 import java.util.List;
 import java.util.Objects;
 import ru.lapolitia.ast.Expression;
+import ru.lapolitia.interpreter.Environment;
 
 public record ClosureValue(List<String> parameters, Expression body, Environment environment)
         implements Value, Callable {

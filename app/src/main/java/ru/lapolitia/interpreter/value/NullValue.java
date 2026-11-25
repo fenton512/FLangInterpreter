@@ -1,4 +1,4 @@
-package ru.lapolitia.interpreter;
+package ru.lapolitia.interpreter.value;
 
 /** The single null value. An empty list is represented by the same value. */
 public record NullValue() implements Value {

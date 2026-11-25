@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import ru.lapolitia.ast.Program;
+import ru.lapolitia.interpreter.value.ValuePrinter;
 import ru.lapolitia.parser.Parser;
 import ru.lapolitia.semantic.ExpressionSimplifier;
 import ru.lapolitia.semantic.UnusedVariableRemover;

@@ -2,6 +2,7 @@ package ru.lapolitia.interpreter;
 
 import java.util.HashMap;
 import java.util.Map;
+import ru.lapolitia.interpreter.value.Value;
 
 /**
  * Lexically nested variable storage. Frames are mutable and closures capture them by reference,
